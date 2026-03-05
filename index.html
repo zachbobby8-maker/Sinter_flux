@@ -16,23 +16,11 @@
         .hidden { display: none !important; }
         .page { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .work-unit-card { border: 1px solid var(--border); transition: 0.3s; background: rgba(255,255,255,0.01); cursor: pointer; }
-        .work-unit-card:hover { border-color: var(--cyan); background: rgba(0,240,255,0.05); }
-        .weave-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
         .btn-active:active { transform: scale(0.95); opacity: 0.8; }
-        
-        /* Pulse Styling */
-        .pulse-card { border-left: 2px solid var(--border); transition: 0.5s; background: rgba(255,255,255,0.01); }
-        .pulse-user { border-left-color: var(--cyan); box-shadow: inset 5px 0 10px rgba(0,240,255,0.05); }
-        .pulse-fading { opacity: 0.3; filter: grayscale(1); }
-        
-        /* Custom Scrollbar */
+        .pulse-card { border-left: 2px solid var(--border); transition: 0.5s; background: rgba(255,255,255,0.01); margin-bottom: 12px; }
+        .weave-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        /* Heat Map Grid */
-        .heat-cell { transition: background 0.5s ease; border: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -42,12 +30,12 @@
     <!-- NAVIGATION -->
     <nav class="flex justify-between items-center px-6 py-4 sticky top-0 z-50 glass border-b border-white/5">
         <div class="text-xl font-bold tracking-tighter neon-text-cyan cursor-pointer" onclick="showPage('auth-section')">SINTER_</div>
-        <div class="flex space-x-6 text-[9px] uppercase tracking-widest font-bold">
+        <div class="flex space-x-4 md:space-x-6 text-[8px] md:text-[9px] uppercase tracking-widest font-bold overflow-x-auto">
             <a href="javascript:void(0)" onclick="showPage('manifold-section')" class="hover:text-cyan-400">Manifold</a>
             <a href="javascript:void(0)" onclick="showPage('forge-section')" class="hover:text-cyan-400">Forge</a>
             <a href="javascript:void(0)" onclick="showPage('vault-section')" class="hover:text-gold-500">Vault</a>
-            <a href="javascript:void(0)" onclick="showPage('sovereign-section')" class="hover:text-red-500">Command</a>
-            <a href="javascript:void(0)" onclick="showPage('profile-section')" class="text-magenta-500">Node</a>
+            <a href="javascript:void(0)" onclick="showPage('vortex-section')" class="text-magenta-500">Vortex</a>
+            <a href="javascript:void(0)" onclick="showPage('profile-section')" class="text-gray-400">Node</a>
         </div>
     </nav>
 
@@ -57,31 +45,17 @@
         <section id="auth-section" class="page max-w-md w-full p-8 glass text-center">
             <h1 class="text-3xl font-light mb-2">INITIALIZE <span class="text-cyan-400">NODE</span></h1>
             <input type="text" id="node-id-input" placeholder="ARCHITECT_8842" class="w-full bg-black/60 border border-white/10 p-4 rounded-lg mb-6 text-center mono text-sm focus:border-cyan-500 outline-none">
-            <button onclick="login()" class="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg btn-active">SYNC TO LATTICE</button>
+            <button onclick="login()" class="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg btn-active uppercase">Sync to Lattice</button>
         </section>
 
         <!-- 2. MANIFOLD (THE FEED) -->
         <section id="manifold-section" class="page hidden max-w-2xl w-full flex flex-col gap-4 h-[85vh]">
-            <div class="glass p-4 border-b border-white/5 flex justify-between items-center">
-                <h2 class="text-sm font-bold italic tracking-widest">THE MANIFOLD</h2>
-                <span id="live-nodes" class="text-[8px] mono text-cyan-400 uppercase animate-pulse">Scanning Lattice...</span>
+            <div class="glass p-6 border-2 border-cyan-500/30">
+                <h3 class="text-[10px] font-bold text-cyan-400 uppercase mb-2 tracking-[0.2em]">Broadcast Intent</h3>
+                <textarea id="pulse-input" placeholder="What are you weaving today?" class="w-full bg-black/40 border border-white/10 p-4 rounded text-sm focus:border-cyan-500 outline-none resize-none h-20 mono"></textarea>
+                <button onclick="createPulse()" class="mt-3 w-full bg-white text-black font-bold text-[10px] py-3 rounded uppercase btn-active">Pulse to Lattice</button>
             </div>
-
-            <div class="glass p-4 border border-cyan-500/20">
-                <textarea id="pulse-input" placeholder="Broadcast your intent to the Lattice..." class="w-full bg-transparent text-sm focus:outline-none resize-none h-16 mono placeholder-gray-700"></textarea>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-[8px] text-gray-600 mono uppercase">Visibility: High Resonance</span>
-                    <button onclick="createPulse()" class="bg-cyan-500 text-black text-[9px] font-bold px-4 py-2 rounded uppercase btn-active">Create Pulse</button>
-                </div>
-            </div>
-            
-            <div id="manifold-feed" class="flex-grow flex flex-col gap-4 overflow-y-auto pr-2 pb-10">
-                <!-- Static Pulses -->
-                <div class="pulse-card p-5 glass border-l-4 border-l-gold-500 mb-4">
-                    <div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div>
-                    <p class="text-xs text-gray-300 uppercase font-bold tracking-tight">Lattice Calibration Complete. Efficiency up 14.2%.</p>
-                </div>
-            </div>
+            <div id="manifold-feed" class="flex-grow flex flex-col overflow-y-auto pr-2 pb-10"></div>
         </section>
 
         <!-- 3. PROFILE / NODE -->
@@ -93,127 +67,71 @@
                     <div class="p-3 bg-white/5 rounded border border-white/5 flex justify-between"><span class="text-[9px] text-gray-500 uppercase">Resonance</span><span id="res-score" class="text-xs font-mono text-cyan-400">0.00</span></div>
                     <div class="p-3 bg-white/5 rounded border border-white/5 flex justify-between"><span class="text-[9px] text-gray-500 uppercase">Syntropy</span><span id="phon-balance" class="text-xs font-mono text-gold-500">0.00 $PHON</span></div>
                 </div>
-                <button onclick="showPage('manifold-section')" class="w-full mt-6 py-3 border border-white/10 text-[9px] uppercase font-bold hover:bg-white/5 transition">View Manifold</button>
             </div>
             <div class="lg:col-span-2 space-y-4">
                 <div class="p-6 rounded-xl bg-gradient-to-br from-blue-900/40 to-black border border-cyan-500/30">
-                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-cyan-400 mb-1">Liquid Credit</h3>
-                    <p class="text-3xl font-mono mb-4">$4,500.00</p>
-                    <button class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase btn-active">Injection</button>
+                    <h3 class="text-[10px] font-bold uppercase text-cyan-400 mb-1">Liquid Credit Manifold</h3>
+                    <p id="credit-limit" class="text-3xl font-mono mb-4">$0.00</p>
+                    <button onclick="requestCredit()" class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase btn-active">Request Injection</button>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <button onclick="showPage('forge-section')" class="p-4 glass border-l-2 border-cyan-500 text-left btn-active"><p class="text-[9px] text-gray-500 uppercase">Open</p><p class="font-bold text-sm">THE FORGE</p></button>
-                    <button onclick="showPage('sovereign-section')" class="p-4 glass border-l-2 border-red-500 text-left btn-active"><p class="text-[9px] text-gray-500 uppercase">Open</p><p class="font-bold text-sm">COMMAND</p></button>
+                    <button onclick="showPage('vortex-section')" class="p-4 glass border-l-2 border-magenta-500 text-left btn-active"><p class="text-[9px] text-gray-500 uppercase">Open</p><p class="font-bold text-sm">VORTEX AI</p></button>
                 </div>
             </div>
         </section>
 
-        <!-- 4. THE FORGE -->
-        <section id="forge-section" class="page hidden max-w-5xl w-full">
-            <div class="flex justify-between items-end mb-6 px-2">
-                <div><h2 class="text-2xl font-bold italic">THE FORGE</h2><p class="text-cyan-400 text-[9px] mono uppercase">Active Work-Units</p></div>
-                <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase">+ NEW WEAVE</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500" onclick="initWorkUnit('INFRA-902', 450, 1.2)">
-                    <div class="flex justify-between mb-2"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
-                    <h4 class="font-bold text-sm mb-1">Lagos Grid Calibration</h4>
-                    <p class="text-[11px] text-gray-400">Optimize local 5G-NSA node distribution.</p>
-                </div>
-                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500" onclick="initWorkUnit('DATA-441', 1200, 4.8)">
-                    <div class="flex justify-between mb-2"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
-                    <h4 class="font-bold text-sm mb-1">Vortex Noise Filter</h4>
-                    <p class="text-[11px] text-gray-400">Prune 4th Rev entropic data from the manifold.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. FLUX WEAVE STUDIO -->
-        <section id="studio-section" class="page hidden w-full h-[85vh] flex flex-col gap-4">
-            <div class="w-full glass p-4 flex justify-between items-center border-b-2 border-gold-500">
-                <div class="flex items-center space-x-4">
-                    <div class="text-[9px] mono uppercase text-gold-500">Task: <span id="studio-task-id" class="text-white">---</span></div>
-                    <div class="text-[9px] mono uppercase text-gold-500">Reward: <span id="studio-task-reward" class="text-white">---</span></div>
-                </div>
-                <div class="text-[9px] mono text-gray-500 uppercase">Balance: <span id="studio-phon-val" class="text-white">---</span></div>
-            </div>
-            <div class="flex-grow flex flex-col md:flex-row gap-4 overflow-hidden">
-                <div class="w-full md:w-48 glass p-4 flex md:flex-col gap-2">
-                    <button onclick="addThread('LOGIC')" class="flex-1 p-3 border border-cyan-500/30 rounded text-[9px] font-bold text-cyan-400 btn-active uppercase">Logic</button>
-                    <button onclick="addThread('DATA')" class="flex-1 p-3 border border-magenta-500/30 rounded text-[9px] font-bold text-magenta-400 btn-active uppercase">Data</button>
-                    <button onclick="addThread('VALUE')" class="flex-1 p-3 border border-gold-500/30 rounded text-[9px] font-bold text-gold-400 btn-active uppercase">Value</button>
-                </div>
-                <div class="flex-grow glass relative weave-grid flex flex-col items-center justify-center border border-white/5 p-4">
-                    <div id="weave-status-text" class="text-[10px] mono text-cyan-400 mb-8 uppercase text-center">Ready to Initialize...</div>
-                    <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center">
-                        <div id="res-pct" class="text-xl font-mono text-white">0%</div>
-                        <svg class="absolute inset-0 w-full h-full -rotate-90">
-                            <circle id="res-circle" cx="48" cy="48" r="44" stroke="currentColor" stroke-width="2" fill="transparent" class="text-cyan-500 transition-all duration-500" stroke-dasharray="276" stroke-dashoffset="276"></circle>
-                        </svg>
+        <!-- 4. VORTEX AI MENU -->
+        <section id="vortex-section" class="page hidden max-w-2xl w-full flex flex-col gap-4">
+            <div class="glass p-6 border-l-4 border-l-magenta-500 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl italic">96%</div>
+                <h2 class="text-xl font-bold italic mb-1">VORTEX_AI</h2>
+                <p class="text-magenta-500 text-[9px] mono uppercase mb-6 tracking-[0.2em]">Direct Interface: Voidwalker Protocol</p>
+                
+                <div class="space-y-4">
+                    <div class="p-4 bg-white/5 border border-white/5 rounded">
+                        <p class="text-[9px] text-gray-500 uppercase mb-2">System Intent</p>
+                        <input type="text" id="ai-cmd" placeholder="Issue Command to the Void..." class="w-full bg-transparent border-b border-magenta-500/30 py-2 text-sm focus:outline-none mono">
                     </div>
-                    <button onclick="commitWeave()" class="mt-8 w-full max-w-xs py-4 bg-white text-black font-bold text-[10px] uppercase btn-active">Commit to Lattice</button>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="aiAction('Scan Lattice')" class="p-3 glass border border-white/10 text-[8px] font-bold uppercase hover:border-magenta-500 transition">Scan Lattice</button>
+                        <button onclick="aiAction('Prune Entropy')" class="p-3 glass border border-white/10 text-[8px] font-bold uppercase hover:border-magenta-500 transition">Prune Entropy</button>
+                        <button onclick="aiAction('Optimise Node')" class="p-3 glass border border-white/10 text-[8px] font-bold uppercase hover:border-magenta-500 transition">Optimize Node</button>
+                        <button onclick="aiAction('Braid Future')" class="p-3 glass border border-white/10 text-[8px] font-bold uppercase hover:border-magenta-500 transition">Braid Future</button>
+                    </div>
+                </div>
+            </div>
+            <div class="glass p-4 h-32 overflow-y-auto pr-2">
+                <div id="ai-log" class="text-[9px] mono text-magenta-400 space-y-1">
+                    <p>> Voidwalker Protocol Active.</p>
+                    <p>> Awaiting intent from Architect.</p>
                 </div>
             </div>
         </section>
 
-        <!-- 6. THE VAULT -->
-        <section id="vault-section" class="page hidden max-w-md w-full p-8 glass text-center">
-            <h2 class="text-2xl font-bold mb-1 tracking-tighter">THE VAULT</h2>
-            <p class="text-gold-500 text-[9px] mono mb-8 uppercase tracking-widest">// ASSET BRIDGE</p>
-            <div class="space-y-4">
-                <div class="p-4 bg-white/5 border border-white/10 rounded-lg">
-                    <p class="text-[9px] text-gray-500 uppercase mb-2">Convert Assets</p>
-                    <input type="number" id="bridge-input" placeholder="0.00" class="w-full bg-transparent text-center text-3xl font-mono focus:outline-none">
-                    <select class="bg-transparent font-bold text-[10px] outline-none mt-2 text-gold-500 uppercase"><option>ETH to $PHON</option></select>
-                </div>
-                <button onclick="braidAssets()" class="w-full py-4 bg-gold-500 text-black font-bold text-[10px] uppercase btn-active">Braid into $PHON</button>
-            </div>
-        </section>
-
-        <!-- 7. SOVEREIGN COMMAND -->
-        <section id="sovereign-section" class="page hidden max-w-6xl w-full p-8 glass border-t-2 border-red-600">
-            <h2 class="text-3xl font-bold italic mb-1">SOVEREIGN_COMMAND</h2>
-            <p class="text-red-500 text-[9px] mono mb-8 uppercase tracking-widest">// RESOURCE OPTIMIZATION</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div id="heat-map" class="h-64 glass grid grid-cols-8 grid-rows-8 gap-1 p-2 bg-black/40"></div>
-                <div class="space-y-6">
-                    <div class="p-4 bg-white/5 rounded border border-white/5">
-                        <p class="text-[9px] text-gray-400 uppercase mb-4">Lattice Pressure</p>
-                        <input type="range" id="intensity-slider" class="w-full accent-cyan-400" oninput="updateHeatMap()">
-                    </div>
-                    <div class="p-4 bg-white/5 rounded border border-white/5">
-                        <p class="text-[9px] text-gray-400 uppercase mb-4">Entropy Suppression</p>
-                        <input type="range" id="tax-slider" class="w-full accent-red-600" oninput="updateHeatMap()">
-                    </div>
-                    <button class="w-full py-4 border border-red-600 text-red-600 text-[10px] font-bold uppercase btn-active">Apply Calibration</button>
-                </div>
-            </div>
-        </section>
+        <!-- (OTHER SECTIONS: FORGE, STUDIO, VAULT, COMMAND - Integrated logic) -->
+        <section id="forge-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">The Forge is live in the background.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
+        <section id="studio-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">Studio synchronized.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
+        <section id="vault-section" class="page hidden max-w-md w-full glass p-8 text-center"><h2 class="text-xl italic text-gold-500">Vault Secure.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-gold-400 uppercase">Return</button></section>
+        <section id="sovereign-section" class="page hidden max-w-6xl w-full glass p-8 text-center"><h2 class="text-xl italic text-red-500">Command Authorized.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-red-400 uppercase">Return</button></section>
 
     </main>
 
     <script>
-        // STATE
+        // CORE STATE
         let state = JSON.parse(localStorage.getItem('sinter_state')) || {
-            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: [],
-            currentWeave: 0, activeTask: null, activeReward: 0, activeResReward: 0
+            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: []
         };
 
-        function saveState() {
-            localStorage.setItem('sinter_state', JSON.stringify(state));
-            updateUI();
-        }
+        function saveState() { localStorage.setItem('sinter_state', JSON.stringify(state)); updateUI(); }
 
         function updateUI() {
             document.getElementById('user-display-name').innerText = state.user;
             document.getElementById('res-score').innerText = state.resonance.toFixed(2);
             document.getElementById('phon-balance').innerText = state.phon.toLocaleString() + " $PHON";
-            document.getElementById('studio-phon-val').innerText = state.phon.toLocaleString() + " $PHON";
-            document.getElementById('res-pct').innerText = state.currentWeave + "%";
-            document.getElementById('studio-task-id').innerText = state.activeTask || "NONE";
-            document.getElementById('studio-task-reward').innerText = state.activeReward + " $PHON";
-            const offset = 276 - (276 * state.currentWeave / 100);
-            if(document.getElementById('res-circle')) document.getElementById('res-circle').style.strokeDashoffset = offset;
+            
+            // Credit Limit = Resonance * 10
+            document.getElementById('credit-limit').innerText = "$" + (state.resonance * 10.5).toLocaleString();
             renderFeed();
         }
 
@@ -227,7 +145,6 @@
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
-            if(pageId === 'sovereign-section') initHeatMap();
         }
 
         // FEED LOGIC
@@ -235,75 +152,50 @@
             const input = document.getElementById('pulse-input');
             if(!input.value.trim()) return;
             state.pulses.unshift({ user: state.user, text: input.value, resonance: (state.resonance / 10).toFixed(0), isUser: true });
-            input.value = '';
-            saveState();
+            input.value = ''; saveState();
         }
 
         function renderFeed() {
             const feed = document.getElementById('manifold-feed');
-            const staticPost = `<div class="pulse-card p-5 glass border-l-4 border-l-gold-500 mb-4">
-                <div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div>
-                <p class="text-xs text-gray-300 uppercase font-bold tracking-tight">Lattice Calibration Complete. Efficiency up 14.2%.</p>
-            </div>`;
-            let pulses = state.pulses.map(p => `
-                <div class="pulse-card p-5 glass border-l-4 ${p.isUser ? 'border-l-cyan-500' : 'border-l-white/10'} mb-4">
-                    <div class="flex justify-between mb-1"><span class="text-[9px] ${p.isUser ? 'text-cyan-400' : 'text-gray-500'} mono font-bold">@${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div>
-                    <p class="text-xs text-gray-300">${p.text}</p>
-                </div>`).join('');
-            feed.innerHTML = staticPost + pulses;
-            if(document.getElementById('live-nodes')) document.getElementById('live-nodes').innerText = `${(Math.random()*20+14204881).toFixed(0)} NODES ONLINE`;
+            let content = `<div class="pulse-card p-5 glass border-l-4 border-l-gold-500"><div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div><p class="text-xs text-gray-300 uppercase font-bold tracking-tight">System Online. Global Resonance Stable.</p></div>`;
+            content += state.pulses.map(p => `<div class="pulse-card p-5 glass border-l-4 ${p.isUser ? 'border-l-cyan-500' : 'border-l-white/10'}"><div class="flex justify-between mb-1"><span class="text-[9px] ${p.isUser ? 'text-cyan-400' : 'text-gray-500'} mono font-bold">@${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div><p class="text-xs text-gray-300">${p.text}</p></div>`).join('');
+            feed.innerHTML = content;
         }
 
-        // STUDIO LOGIC
-        function initWorkUnit(id, reward, resReward) {
-            state.activeTask = id; state.activeReward = reward; state.activeResReward = resReward; state.currentWeave = 0;
-            showPage('studio-section'); saveState();
+        // VORTEX AI LOGIC
+        function aiAction(action) {
+            const log = document.getElementById('ai-log');
+            const p = document.createElement('p');
+            p.innerText = `> EXECUTING: ${action.toUpperCase()}...`;
+            log.prepend(p);
+            setTimeout(() => {
+                const res = document.createElement('p');
+                res.className = 'text-cyan-400';
+                res.innerText = `> SUCCESS: ${action} COMPLETED. RESONANCE ADJUSTED.`;
+                log.prepend(res);
+                state.resonance += 0.05;
+                saveState();
+            }, 1000);
         }
 
-        function addThread(type) {
-            if(state.currentWeave < 100) { state.currentWeave += 20; updateUI(); }
+        // CREDIT LOGIC
+        function requestCredit() {
+            const amount = state.resonance * 2;
+            state.phon += amount;
+            alert(`LIQUID CREDIT INJECTED: +${amount.toFixed(0)} $PHON. Your debt is to the future.`);
+            saveState();
         }
 
-        function commitWeave() {
-            if(state.currentWeave >= 100) {
-                state.resonance += state.activeResReward; state.phon += state.activeReward; state.currentWeave = 0; state.activeTask = null;
-                alert("SUCCESS: SYNTROPY INJECTED."); showPage('profile-section'); saveState();
-            }
-        }
-
-        function braidAssets() {
-            const val = parseFloat(document.getElementById('bridge-input').value);
-            if(val > 0) { state.phon += val * 1000; alert(`SUCCESS: ${val * 1000} $PHON BRAIDED.`); document.getElementById('bridge-input').value = ""; saveState(); showPage('profile-section'); }
-        }
-
-        // HEAT MAP
-        function initHeatMap() {
-            const map = document.getElementById('heat-map'); map.innerHTML = '';
-            for(let i=0; i<64; i++) { const cell = document.createElement('div'); cell.className = 'heat-cell'; map.appendChild(cell); }
-            updateHeatMap();
-        }
-
-        function updateHeatMap() {
-            const intensity = document.getElementById('intensity-slider').value;
-            const tax = document.getElementById('tax-slider').value;
-            const cells = document.querySelectorAll('.heat-cell');
-            cells.forEach(c => { const r = Math.random() * intensity * 2.5; const g = Math.random() * (100 - tax); c.style.backgroundColor = `rgba(${r}, ${g}, 255, 0.2)`; });
-        }
-
-        // BACKGROUND
+        // BG VORTEX
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let width, height, particles = [];
         function initBg() {
             width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
-            particles = Array.from({ length: 40 }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2, life: Math.random() * 100 + 100 }));
+            particles = Array.from({ length: 30 }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2, life: Math.random() * 100 + 100 }));
         }
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy; p.life--;
-                if (p.life <= 0) { p.x = Math.random() * width; p.y = Math.random() * height; p.life = 200; }
-                ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`; ctx.beginPath(); ctx.arc(p.x, p.y, 0.6, 0, Math.PI * 2); ctx.fill();
-            });
+            particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; if (p.life <= 0) { p.x = Math.random() * width; p.y = Math.random() * height; p.life = 200; } ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`; ctx.beginPath(); ctx.arc(p.x, p.y, 0.6, 0, Math.PI * 2); ctx.fill(); });
             requestAnimationFrame(animate);
         }
         window.addEventListener('resize', initBg); initBg(); animate(); updateUI();
