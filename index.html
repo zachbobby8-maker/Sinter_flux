@@ -20,6 +20,10 @@
         .work-unit-card:hover { border-color: var(--cyan); background: rgba(0,240,255,0.05); }
         .weave-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
         .btn-active:active { transform: scale(0.95); opacity: 0.8; }
+        
+        /* Studio Overlay Animation */
+        .vault-pulse { animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0%, 100% { border-color: var(--gold); } 50% { border-color: rgba(255, 204, 0, 0.5); } }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -76,12 +80,12 @@
                 <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase">+ NEW WEAVE</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500" onclick="initWorkUnit('INFRA-902')">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500" onclick="initWorkUnit('INFRA-902', 450, 1.2)">
                     <div class="flex justify-between mb-2"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
                     <h4 class="font-bold text-sm mb-1">Lagos Grid Calibration</h4>
                     <p class="text-[11px] text-gray-400">Optimize local 5G-NSA node distribution.</p>
                 </div>
-                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500" onclick="initWorkUnit('DATA-441')">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500" onclick="initWorkUnit('DATA-441', 1200, 4.8)">
                     <div class="flex justify-between mb-2"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
                     <h4 class="font-bold text-sm mb-1">Vortex Noise Filter</h4>
                     <p class="text-[11px] text-gray-400">Prune 4th Rev entropic data from the manifold.</p>
@@ -90,18 +94,36 @@
         </section>
 
         <!-- 4. FLUX WEAVE STUDIO -->
-        <section id="studio-section" class="page hidden w-full h-[80vh] flex flex-col md:flex-row gap-4">
-            <div class="w-full md:w-48 glass p-4 flex md:flex-col gap-2 overflow-x-auto">
-                <button onclick="addThread('LOGIC')" class="flex-1 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded text-[9px] font-bold text-cyan-400 btn-active">LOGIC</button>
-                <button onclick="addThread('DATA')" class="flex-1 p-3 bg-magenta-500/10 border border-magenta-500/30 rounded text-[9px] font-bold text-magenta-400 btn-active">DATA</button>
-                <button onclick="addThread('VALUE')" class="flex-1 p-3 bg-gold-500/10 border border-gold-500/30 rounded text-[9px] font-bold text-gold-400 btn-active">VALUE</button>
-            </div>
-            <div class="flex-grow glass relative weave-grid flex flex-col items-center justify-center border border-white/5 p-4">
-                <div id="weave-status-text" class="text-[10px] mono text-cyan-400 mb-8 uppercase tracking-widest">Awaiting initialization...</div>
-                <div class="w-24 h-24 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center">
-                    <div id="res-pct" class="text-xl font-mono text-white">0%</div>
+        <section id="studio-section" class="page hidden w-full h-[85vh] flex flex-col gap-4">
+            <!-- Studio Mini-Vault Header -->
+            <div class="w-full glass p-4 flex justify-between items-center border-b-2 border-gold-500 vault-pulse">
+                <div class="flex items-center space-x-4">
+                    <div class="text-[9px] mono uppercase text-gold-500">Working On: <span id="studio-task-id" class="text-white">---</span></div>
+                    <div class="text-[9px] mono uppercase text-gold-500">Reward: <span id="studio-task-reward" class="text-white">---</span></div>
                 </div>
-                <button onclick="commitWeave()" class="mt-8 w-full max-w-xs py-3 bg-white text-black font-bold text-[10px] uppercase btn-active">Commit to Lattice</button>
+                <div class="flex space-x-6">
+                    <div class="text-[9px] mono text-gray-500 uppercase">Balance: <span id="studio-phon-val" class="text-white">---</span></div>
+                    <div class="text-[9px] mono text-gray-500 uppercase">Resonance: <span id="studio-res-val" class="text-cyan-400">---</span></div>
+                </div>
+            </div>
+
+            <div class="flex-grow flex flex-col md:flex-row gap-4 overflow-hidden">
+                <div class="w-full md:w-48 glass p-4 flex md:flex-col gap-2 overflow-x-auto">
+                    <button onclick="addThread('LOGIC')" class="flex-1 p-3 bg-cyan-500/10 border border-cyan-500/30 rounded text-[9px] font-bold text-cyan-400 btn-active uppercase">Logic</button>
+                    <button onclick="addThread('DATA')" class="flex-1 p-3 bg-magenta-500/10 border border-magenta-500/30 rounded text-[9px] font-bold text-magenta-400 btn-active uppercase">Data</button>
+                    <button onclick="addThread('VALUE')" class="flex-1 p-3 bg-gold-500/10 border border-gold-500/30 rounded text-[9px] font-bold text-gold-400 btn-active uppercase">Value</button>
+                </div>
+                <div class="flex-grow glass relative weave-grid flex flex-col items-center justify-center border border-white/5 p-4 overflow-hidden">
+                    <div id="weave-status-text" class="text-[10px] mono text-cyan-400 mb-8 uppercase tracking-widest text-center">Awaiting initialization...</div>
+                    <div class="relative w-32 h-32 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center">
+                        <div id="res-pct" class="text-2xl font-mono text-white">0%</div>
+                        <!-- Decorative SVG Circle -->
+                        <svg class="absolute inset-0 w-full h-full -rotate-90">
+                            <circle id="res-circle" cx="64" cy="64" r="60" stroke="currentColor" stroke-width="2" fill="transparent" class="text-cyan-500 transition-all duration-500" stroke-dasharray="377" stroke-dashoffset="377"></circle>
+                        </svg>
+                    </div>
+                    <button onclick="commitWeave()" class="mt-8 w-full max-w-xs py-4 bg-white text-black font-bold text-[10px] uppercase btn-active">Commit to Lattice</button>
+                </div>
             </div>
         </section>
 
@@ -122,12 +144,10 @@
     </main>
 
     <script>
-        // BACKEND SIMULATION (Local Memory)
+        // BACKEND SIMULATION
         let state = JSON.parse(localStorage.getItem('sinter_state')) || {
-            user: "ARCHITECT_8842",
-            resonance: 842.09,
-            phon: 12400.00,
-            currentWeave: 0
+            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, currentWeave: 0,
+            activeTask: null, activeReward: 0, activeResReward: 0
         };
 
         function saveState() {
@@ -136,10 +156,23 @@
         }
 
         function updateUI() {
+            // General Stats
             document.getElementById('user-display-name').innerText = state.user;
             document.getElementById('res-score').innerText = state.resonance.toFixed(2);
             document.getElementById('phon-balance').innerText = state.phon.toLocaleString() + " $PHON";
+            
+            // Studio Stats
+            document.getElementById('studio-phon-val').innerText = state.phon.toLocaleString() + " $PHON";
+            document.getElementById('studio-res-val').innerText = state.resonance.toFixed(2);
             document.getElementById('res-pct').innerText = state.currentWeave + "%";
+            
+            // Studio Task Info
+            document.getElementById('studio-task-id').innerText = state.activeTask || "NONE";
+            document.getElementById('studio-task-reward').innerText = state.activeReward + " $PHON";
+            
+            // Progress Circle (2*PI*R = 377)
+            const offset = 377 - (377 * state.currentWeave / 100);
+            document.getElementById('res-circle').style.strokeDashoffset = offset;
         }
 
         function login() {
@@ -155,11 +188,14 @@
         }
 
         // STUDIO LOGIC
-        function initWorkUnit(id) {
+        function initWorkUnit(id, reward, resReward) {
+            state.activeTask = id;
+            state.activeReward = reward;
+            state.activeResReward = resReward;
             state.currentWeave = 0;
-            document.getElementById('weave-status-text').innerText = `Calibrating Unit #${id}...`;
+            document.getElementById('weave-status-text').innerText = `CALIBRATING UNIT #${id}...`;
             showPage('studio-section');
-            updateUI();
+            saveState();
         }
 
         function addThread(type) {
@@ -172,14 +208,15 @@
 
         function commitWeave() {
             if(state.currentWeave >= 100) {
-                state.resonance += 2.5;
-                state.phon += 500;
+                state.resonance += state.activeResReward;
+                state.phon += state.activeReward;
                 state.currentWeave = 0;
-                alert("WEAVE SUCCESSFUL. SYNTROPY INJECTED.");
+                state.activeTask = null;
+                alert("SUCCESS: SYNTROPY INJECTED INTO VAULT.");
                 showPage('profile-section');
                 saveState();
             } else {
-                alert("RESONANCE INCOMPLETE. ADD MORE THREADS.");
+                alert("RESONANCE INCOMPLETE.");
             }
         }
 
@@ -194,7 +231,7 @@
             }
         }
 
-        // BACKGROUND VORTEX
+        // BACKGROUND
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
