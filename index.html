@@ -16,12 +16,20 @@
         .hidden { display: none !important; }
         .page { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-active:active { transform: scale(0.95); opacity: 0.8; }
+        .work-unit-card { border: 1px solid var(--border); transition: 0.3s; background: rgba(255,255,255,0.01); cursor: pointer; }
+        .work-unit-card:hover { border-color: var(--cyan); background: rgba(0,240,255,0.05); }
         .weave-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
+        .btn-active:active { transform: scale(0.95); opacity: 0.8; }
         
-        /* Manifold Pulse Animation */
-        .pulse-fade { animation: fadeOut 10s forwards; }
-        @keyframes fadeOut { 0% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0.1; } }
+        /* Pulse Styling */
+        .pulse-card { border-left: 2px solid var(--border); transition: 0.5s; background: rgba(255,255,255,0.01); }
+        .pulse-user { border-left-color: var(--cyan); box-shadow: inset 5px 0 10px rgba(0,240,255,0.05); }
+        .pulse-fading { opacity: 0.3; filter: grayscale(1); }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
         /* Heat Map Grid */
         .heat-cell { transition: background 0.5s ease; border: 1px solid rgba(255,255,255,0.05); }
@@ -48,44 +56,30 @@
         <!-- 1. AUTH -->
         <section id="auth-section" class="page max-w-md w-full p-8 glass text-center">
             <h1 class="text-3xl font-light mb-2">INITIALIZE <span class="text-cyan-400">NODE</span></h1>
-            <p class="text-gray-500 text-[10px] mb-8 uppercase tracking-[0.2em]">Bypassing 4th Rev Viscosity</p>
             <input type="text" id="node-id-input" placeholder="ARCHITECT_8842" class="w-full bg-black/60 border border-white/10 p-4 rounded-lg mb-6 text-center mono text-sm focus:border-cyan-500 outline-none">
             <button onclick="login()" class="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg btn-active">SYNC TO LATTICE</button>
         </section>
 
         <!-- 2. MANIFOLD (THE FEED) -->
-        <section id="manifold-section" class="page hidden max-w-4xl w-full flex flex-col gap-4">
-            <div class="glass p-4 border-l-4 border-cyan-500 flex justify-between items-center">
-                <div><h2 class="text-lg font-bold italic">THE MANIFOLD</h2><p class="text-[9px] text-cyan-400 mono uppercase tracking-widest">Global Lattice Pulse // Live Feed</p></div>
-                <div class="text-right"><p class="text-[8px] text-gray-500">ACTIVE NODES</p><p class="text-xs font-mono">14,204,881</p></div>
+        <section id="manifold-section" class="page hidden max-w-2xl w-full flex flex-col gap-4 h-[85vh]">
+            <div class="glass p-4 border-b border-white/5 flex justify-between items-center">
+                <h2 class="text-sm font-bold italic tracking-widest">THE MANIFOLD</h2>
+                <span id="live-nodes" class="text-[8px] mono text-cyan-400 uppercase animate-pulse">Scanning Lattice...</span>
+            </div>
+
+            <div class="glass p-4 border border-cyan-500/20">
+                <textarea id="pulse-input" placeholder="Broadcast your intent to the Lattice..." class="w-full bg-transparent text-sm focus:outline-none resize-none h-16 mono placeholder-gray-700"></textarea>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-[8px] text-gray-600 mono uppercase">Visibility: High Resonance</span>
+                    <button onclick="createPulse()" class="bg-cyan-500 text-black text-[9px] font-bold px-4 py-2 rounded uppercase btn-active">Create Pulse</button>
+                </div>
             </div>
             
-            <div id="manifold-feed" class="flex flex-col gap-4 overflow-y-auto h-[60vh] p-2">
-                <!-- Pulse 1 -->
-                <div class="glass p-5 border border-white/5 relative overflow-hidden">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-[9px] text-magenta-500 mono font-bold">@NODE_9921</span>
-                        <span class="text-[9px] text-gray-500">RESONANCE: 1.4K</span>
-                    </div>
-                    <p class="text-sm text-gray-300">Successfully braided Sector 4 Logistics. Efficiency gain: +12%. <span class="text-cyan-400">#Syntropy</span></p>
-                    <div class="absolute bottom-0 left-0 h-1 bg-cyan-500 w-full opacity-20"></div>
-                </div>
-                <!-- Pulse 2 (Fading) -->
-                <div class="glass p-5 border border-white/5 pulse-fade">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-[9px] text-gray-600 mono">@NODE_1022</span>
-                        <span class="text-[9px] text-red-500">RESONANCE: 12</span>
-                    </div>
-                    <p class="text-sm text-gray-600 italic">Does anyone have any memes? I'm bored. </p>
-                    <p class="text-[8px] text-red-900 mt-2 uppercase font-bold tracking-widest">// DETECTED AS NOISE: PRUNING IN PROGRESS...</p>
-                </div>
-                <!-- Pulse 3 -->
-                <div class="glass p-5 border border-white/5 border-l-4 border-gold-500">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span>
-                        <span class="text-[9px] text-gray-500">OFFICIAL COMMAND</span>
-                    </div>
-                    <p class="text-sm text-gray-300 font-bold uppercase">New Work-Units injected into Lagos Sector 7. High priority. 5,000 $PHON total pool.</p>
+            <div id="manifold-feed" class="flex-grow flex flex-col gap-4 overflow-y-auto pr-2 pb-10">
+                <!-- Static Pulses -->
+                <div class="pulse-card p-5 glass border-l-4 border-l-gold-500 mb-4">
+                    <div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div>
+                    <p class="text-xs text-gray-300 uppercase font-bold tracking-tight">Lattice Calibration Complete. Efficiency up 14.2%.</p>
                 </div>
             </div>
         </section>
@@ -121,12 +115,12 @@
                 <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase">+ NEW WEAVE</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-6 glass border-l-4 border-l-cyan-500 cursor-pointer" onclick="initWorkUnit('INFRA-902', 450, 1.2)">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500" onclick="initWorkUnit('INFRA-902', 450, 1.2)">
                     <div class="flex justify-between mb-2"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
                     <h4 class="font-bold text-sm mb-1">Lagos Grid Calibration</h4>
                     <p class="text-[11px] text-gray-400">Optimize local 5G-NSA node distribution.</p>
                 </div>
-                <div class="p-6 glass border-l-4 border-l-magenta-500 cursor-pointer" onclick="initWorkUnit('DATA-441', 1200, 4.8)">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500" onclick="initWorkUnit('DATA-441', 1200, 4.8)">
                     <div class="flex justify-between mb-2"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
                     <h4 class="font-bold text-sm mb-1">Vortex Noise Filter</h4>
                     <p class="text-[11px] text-gray-400">Prune 4th Rev entropic data from the manifold.</p>
@@ -163,14 +157,14 @@
         </section>
 
         <!-- 6. THE VAULT -->
-        <section id="vault-section" class="page hidden max-w-md w-full p-8 glass">
+        <section id="vault-section" class="page hidden max-w-md w-full p-8 glass text-center">
             <h2 class="text-2xl font-bold mb-1 tracking-tighter">THE VAULT</h2>
             <p class="text-gold-500 text-[9px] mono mb-8 uppercase tracking-widest">// ASSET BRIDGE</p>
             <div class="space-y-4">
-                <div class="p-4 bg-white/5 border border-white/10 rounded-lg text-center">
+                <div class="p-4 bg-white/5 border border-white/10 rounded-lg">
                     <p class="text-[9px] text-gray-500 uppercase mb-2">Convert Assets</p>
                     <input type="number" id="bridge-input" placeholder="0.00" class="w-full bg-transparent text-center text-3xl font-mono focus:outline-none">
-                    <select class="bg-transparent font-bold text-[10px] outline-none mt-2 text-gold-500 uppercase"><option>ETH to $PHON</option><option>USDT to $PHON</option></select>
+                    <select class="bg-transparent font-bold text-[10px] outline-none mt-2 text-gold-500 uppercase"><option>ETH to $PHON</option></select>
                 </div>
                 <button onclick="braidAssets()" class="w-full py-4 bg-gold-500 text-black font-bold text-[10px] uppercase btn-active">Braid into $PHON</button>
             </div>
@@ -179,19 +173,16 @@
         <!-- 7. SOVEREIGN COMMAND -->
         <section id="sovereign-section" class="page hidden max-w-6xl w-full p-8 glass border-t-2 border-red-600">
             <h2 class="text-3xl font-bold italic mb-1">SOVEREIGN_COMMAND</h2>
-            <p class="text-red-500 text-[9px] mono mb-8 uppercase tracking-widest">// NATIONAL RESOURCE OPTIMIZATION</p>
+            <p class="text-red-500 text-[9px] mono mb-8 uppercase tracking-widest">// RESOURCE OPTIMIZATION</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Heat Map Placeholder -->
-                <div id="heat-map" class="h-64 glass grid grid-cols-8 grid-rows-8 gap-1 p-2 bg-black/40">
-                    <!-- JS will populate this -->
-                </div>
+                <div id="heat-map" class="h-64 glass grid grid-cols-8 grid-rows-8 gap-1 p-2 bg-black/40"></div>
                 <div class="space-y-6">
                     <div class="p-4 bg-white/5 rounded border border-white/5">
-                        <p class="text-[9px] text-gray-400 uppercase mb-4">Lattice Pressure (Incentives)</p>
+                        <p class="text-[9px] text-gray-400 uppercase mb-4">Lattice Pressure</p>
                         <input type="range" id="intensity-slider" class="w-full accent-cyan-400" oninput="updateHeatMap()">
                     </div>
                     <div class="p-4 bg-white/5 rounded border border-white/5">
-                        <p class="text-[9px] text-gray-400 uppercase mb-4">Entropy Suppression (Taxation)</p>
+                        <p class="text-[9px] text-gray-400 uppercase mb-4">Entropy Suppression</p>
                         <input type="range" id="tax-slider" class="w-full accent-red-600" oninput="updateHeatMap()">
                     </div>
                     <button class="w-full py-4 border border-red-600 text-red-600 text-[10px] font-bold uppercase btn-active">Apply Calibration</button>
@@ -202,10 +193,10 @@
     </main>
 
     <script>
-        // STATE & PERSISTENCE
+        // STATE
         let state = JSON.parse(localStorage.getItem('sinter_state')) || {
-            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, currentWeave: 0,
-            activeTask: null, activeReward: 0, activeResReward: 0
+            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: [],
+            currentWeave: 0, activeTask: null, activeReward: 0, activeResReward: 0
         };
 
         function saveState() {
@@ -222,7 +213,8 @@
             document.getElementById('studio-task-id').innerText = state.activeTask || "NONE";
             document.getElementById('studio-task-reward').innerText = state.activeReward + " $PHON";
             const offset = 276 - (276 * state.currentWeave / 100);
-            document.getElementById('res-circle').style.strokeDashoffset = offset;
+            if(document.getElementById('res-circle')) document.getElementById('res-circle').style.strokeDashoffset = offset;
+            renderFeed();
         }
 
         function login() {
@@ -238,52 +230,56 @@
             if(pageId === 'sovereign-section') initHeatMap();
         }
 
-        // STUDIO LOGIC
-        function initWorkUnit(id, reward, resReward) {
-            state.activeTask = id; state.activeReward = reward; state.activeResReward = resReward;
-            state.currentWeave = 0;
-            document.getElementById('weave-status-text').innerText = `CALIBRATING UNIT #${id}...`;
-            showPage('studio-section');
+        // FEED LOGIC
+        function createPulse() {
+            const input = document.getElementById('pulse-input');
+            if(!input.value.trim()) return;
+            state.pulses.unshift({ user: state.user, text: input.value, resonance: (state.resonance / 10).toFixed(0), isUser: true });
+            input.value = '';
             saveState();
         }
 
+        function renderFeed() {
+            const feed = document.getElementById('manifold-feed');
+            const staticPost = `<div class="pulse-card p-5 glass border-l-4 border-l-gold-500 mb-4">
+                <div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div>
+                <p class="text-xs text-gray-300 uppercase font-bold tracking-tight">Lattice Calibration Complete. Efficiency up 14.2%.</p>
+            </div>`;
+            let pulses = state.pulses.map(p => `
+                <div class="pulse-card p-5 glass border-l-4 ${p.isUser ? 'border-l-cyan-500' : 'border-l-white/10'} mb-4">
+                    <div class="flex justify-between mb-1"><span class="text-[9px] ${p.isUser ? 'text-cyan-400' : 'text-gray-500'} mono font-bold">@${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div>
+                    <p class="text-xs text-gray-300">${p.text}</p>
+                </div>`).join('');
+            feed.innerHTML = staticPost + pulses;
+            if(document.getElementById('live-nodes')) document.getElementById('live-nodes').innerText = `${(Math.random()*20+14204881).toFixed(0)} NODES ONLINE`;
+        }
+
+        // STUDIO LOGIC
+        function initWorkUnit(id, reward, resReward) {
+            state.activeTask = id; state.activeReward = reward; state.activeResReward = resReward; state.currentWeave = 0;
+            showPage('studio-section'); saveState();
+        }
+
         function addThread(type) {
-            if(state.currentWeave < 100) {
-                state.currentWeave += 20;
-                document.getElementById('weave-status-text').innerText = `${type} THREAD BOUND.`;
-                updateUI();
-            }
+            if(state.currentWeave < 100) { state.currentWeave += 20; updateUI(); }
         }
 
         function commitWeave() {
             if(state.currentWeave >= 100) {
-                state.resonance += state.activeResReward; state.phon += state.activeReward;
-                state.currentWeave = 0; state.activeTask = null;
-                alert("SUCCESS: SYNTROPY INJECTED.");
-                showPage('profile-section');
-                saveState();
+                state.resonance += state.activeResReward; state.phon += state.activeReward; state.currentWeave = 0; state.activeTask = null;
+                alert("SUCCESS: SYNTROPY INJECTED."); showPage('profile-section'); saveState();
             }
         }
 
         function braidAssets() {
             const val = parseFloat(document.getElementById('bridge-input').value);
-            if(val > 0) {
-                state.phon += val * 1000;
-                alert(`SUCCESS: ${val * 1000} $PHON BRAIDED.`);
-                document.getElementById('bridge-input').value = "";
-                saveState(); showPage('profile-section');
-            }
+            if(val > 0) { state.phon += val * 1000; alert(`SUCCESS: ${val * 1000} $PHON BRAIDED.`); document.getElementById('bridge-input').value = ""; saveState(); showPage('profile-section'); }
         }
 
-        // SOVEREIGN HEAT MAP
+        // HEAT MAP
         function initHeatMap() {
-            const map = document.getElementById('heat-map');
-            map.innerHTML = '';
-            for(let i=0; i<64; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'heat-cell';
-                map.appendChild(cell);
-            }
+            const map = document.getElementById('heat-map'); map.innerHTML = '';
+            for(let i=0; i<64; i++) { const cell = document.createElement('div'); cell.className = 'heat-cell'; map.appendChild(cell); }
             updateHeatMap();
         }
 
@@ -291,38 +287,26 @@
             const intensity = document.getElementById('intensity-slider').value;
             const tax = document.getElementById('tax-slider').value;
             const cells = document.querySelectorAll('.heat-cell');
-            cells.forEach(c => {
-                const r = Math.random() * intensity * 2.5;
-                const g = Math.random() * (100 - tax);
-                c.style.backgroundColor = `rgba(${r}, ${g}, 255, 0.2)`;
-            });
+            cells.forEach(c => { const r = Math.random() * intensity * 2.5; const g = Math.random() * (100 - tax); c.style.backgroundColor = `rgba(${r}, ${g}, 255, 0.2)`; });
         }
 
         // BACKGROUND
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let width, height, particles = [];
         function initBg() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = Array.from({ length: 40 }, () => ({
-                x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
-                life: Math.random() * 100 + 100
-            }));
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+            particles = Array.from({ length: 40 }, () => ({ x: Math.random() * width, y: Math.random() * height, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2, life: Math.random() * 100 + 100 }));
         }
         function animate() {
             ctx.clearRect(0, 0, width, height);
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy; p.life--;
                 if (p.life <= 0) { p.x = Math.random() * width; p.y = Math.random() * height; p.life = 200; }
-                ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 0.6, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`; ctx.beginPath(); ctx.arc(p.x, p.y, 0.6, 0, Math.PI * 2); ctx.fill();
             });
             requestAnimationFrame(animate);
         }
-        window.addEventListener('resize', initBg);
-        initBg(); animate(); updateUI();
+        window.addEventListener('resize', initBg); initBg(); animate(); updateUI();
     </script>
 </body>
 </html>
