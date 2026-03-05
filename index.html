@@ -109,15 +109,28 @@
             </div>
         </section>
 
-        <!-- (OTHER SECTIONS: FORGE, STUDIO, VAULT, COMMAND - Integrated logic) -->
-        <section id="forge-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">The Forge is live in the background.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
-        <section id="studio-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">Studio synchronized.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
+        <!-- (OTHER SECTIONS) -->
+        <section id="forge-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">The Forge is live.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
         <section id="vault-section" class="page hidden max-w-md w-full glass p-8 text-center"><h2 class="text-xl italic text-gold-500">Vault Secure.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-gold-400 uppercase">Return</button></section>
-        <section id="sovereign-section" class="page hidden max-w-6xl w-full glass p-8 text-center"><h2 class="text-xl italic text-red-500">Command Authorized.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-red-400 uppercase">Return</button></section>
 
     </main>
 
     <script>
+        // AI PULSE GENERATOR DATA
+        const aiUsers = ['@VOIDWALKER', '@SINTER_CORE', '@LATTICE_ADMIN', '@NODE_702', '@SYNTHETIC_GUIDE'];
+        const aiMessages = [
+            'Vortex optimization complete. Lattice efficiency +0.4%.',
+            'New Work-Unit detected: Sector 7 Grid Stabilization.',
+            'Syntropy injection successful. Resonance harmonic stable.',
+            'Entropy pruning active. Removing 4th Rev noise.',
+            'Liquid Credit Manifold updated. Global liquidity stable.',
+            'Node synchronization complete across all regions.',
+            'Detecting high-value braid pattern in Sector 12.',
+            'Sovereign Command: National pressure normalized to 1.2.',
+            'Thermal sink calibration successful. Hardware optimal.',
+            'Manifold noise ratio below threshold. Signal clear.'
+        ];
+
         // CORE STATE
         let state = JSON.parse(localStorage.getItem('sinter_state')) || {
             user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: []
@@ -129,8 +142,6 @@
             document.getElementById('user-display-name').innerText = state.user;
             document.getElementById('res-score').innerText = state.resonance.toFixed(2);
             document.getElementById('phon-balance').innerText = state.phon.toLocaleString() + " $PHON";
-            
-            // Credit Limit = Resonance * 10
             document.getElementById('credit-limit').innerText = "$" + (state.resonance * 10.5).toLocaleString();
             renderFeed();
         }
@@ -155,10 +166,38 @@
             input.value = ''; saveState();
         }
 
+        // AI AUTO-PULSE GENERATOR
+        function generateAIPulse() {
+            const randomUser = aiUsers[Math.floor(Math.random() * aiUsers.length)];
+            const randomMsg = aiMessages[Math.floor(Math.random() * aiMessages.length)];
+            
+            state.pulses.unshift({
+                user: randomUser,
+                text: randomMsg,
+                resonance: Math.floor(Math.random() * 500 + 100),
+                isUser: false,
+                isAI: true
+            });
+            
+            // Keep only last 20 pulses to prevent memory bloat
+            if(state.pulses.length > 20) state.pulses = state.pulses.slice(0, 20);
+            
+            saveState();
+        }
+
+        // Start AI Pulse Generator every 20 seconds
+        setInterval(generateAIPulse, 20000);
+
         function renderFeed() {
             const feed = document.getElementById('manifold-feed');
             let content = `<div class="pulse-card p-5 glass border-l-4 border-l-gold-500"><div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div><p class="text-xs text-gray-300 uppercase font-bold tracking-tight">System Online. Global Resonance Stable.</p></div>`;
-            content += state.pulses.map(p => `<div class="pulse-card p-5 glass border-l-4 ${p.isUser ? 'border-l-cyan-500' : 'border-l-white/10'}"><div class="flex justify-between mb-1"><span class="text-[9px] ${p.isUser ? 'text-cyan-400' : 'text-gray-500'} mono font-bold">@${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div><p class="text-xs text-gray-300">${p.text}</p></div>`).join('');
+            
+            content += state.pulses.map(p => {
+                const colorClass = p.isUser ? 'border-l-cyan-500' : (p.isAI ? 'border-l-magenta-500' : 'border-l-white/10');
+                const textClass = p.isUser ? 'text-cyan-400' : (p.isAI ? 'text-magenta-400' : 'text-gray-500');
+                return `<div class="pulse-card p-5 glass ${colorClass}"><div class="flex justify-between mb-1"><span class="text-[9px] ${textClass} mono font-bold">${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div><p class="text-xs text-gray-300">${p.text}</p></div>`;
+            }).join('');
+            
             feed.innerHTML = content;
         }
 
