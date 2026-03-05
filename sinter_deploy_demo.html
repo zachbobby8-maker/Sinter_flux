@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sinter App | Deployment Demo</title>
+    <style>
+        body { background: #000; color: #00ffff; font-family: monospace; padding: 50px; text-align: center; }
+        .terminal { border: 1px solid #00ffff; padding: 20px; background: #050505; text-align: left; display: inline-block; width: 600px; box-shadow: 0 0 20px #00ffff55; }
+        .cursor { display: inline-block; width: 10px; height: 1.2em; background: #00ffff; animation: blink 1s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
+        .button { border: 1px solid #00ffff; padding: 10px; margin-top: 20px; cursor: pointer; display: inline-block; }
+        .button:hover { background: #00ffff; color: #000; }
+        .status { color: #ff00ff; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>SINTER DEPLOYMENT TERMINAL</h1>
+    <div class="terminal">
+        <div class="status">[SYSTEM] READY FOR DEPLOYMENT</div>
+        <div id="output">> </div>
+    </div>
+    <br>
+    <div class="button" onclick="startDeploy()">RUN DEPLOY_VORTEX.FLUX</div>
+
+    <script>
+        const output = document.getElementById('output');
+        const lines = [
+            "Initializing Vortex Engine...",
+            "Loading Lattice (39.42 kHz)...",
+            "Compiling FLUX Grammar...",
+            "Resonating manifolds...",
+            "Interlacing with Lagos-Accra Zone...",
+            "Phase-Lock established.",
+            "DEPLOYMENT SUCCESSFUL."
+        ];
+        let i = 0;
+        function startDeploy() {
+            if (i < lines.length) {
+                output.innerHTML += lines[i] + "<br>> ";
+                i++;
+                setTimeout(startDeploy, 800);
+            }
+        }
+    </script>
+</body>
+</html>

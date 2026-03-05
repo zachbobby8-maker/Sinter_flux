@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinter | The Manifold Simulation</title>
+    <style>
+        :root {
+            --bg-obsidian: #010101;
+            --sinter-neon: #00f0ff;
+            --sinter-accent: #0044ff;
+            --text-main: #e0faff;
+            --panel-bg: rgba(5, 5, 10, 0.95);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-obsidian);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        #simulation-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        #nav-rail {
+            width: 80px;
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 1px solid rgba(0, 240, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            gap: 40px;
+            z-index: 100;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--sinter-neon);
+            transition: 0.3s;
+        }
+
+        .nav-icon:hover, .nav-icon.active {
+            background: var(--sinter-neon);
+            color: var(--bg-obsidian);
+            box-shadow: 0 0 20px var(--sinter-neon);
+        }
+
+        /* Main Viewport */
+        #viewport {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        iframe.active {
+            display: block;
+        }
+
+        /* Economy Overlay (The Wallet) */
+        #wallet-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 15px 25px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 200;
+        }
+
+        .currency-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .currency-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--sinter-neon);
+        }
+
+        .currency-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+        }
+
+        /* Transition Screen */
+        #shimmer-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--sinter-neon);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+        }
+
+        @keyframes shimmer-fade {
+            0% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="shimmer-gate"></div>
+
+    <div id="simulation-container">
+        
+        <nav id="nav-rail">
+            <div class="nav-icon active" onclick="switchView('login')" title="Login">🔐</div>
+            <div class="nav-icon" onclick="switchView('feed')" title="Feed">🌀</div>
+            <div class="nav-icon" onclick="switchView('architect')" title="Build">🛠</div>
+        </nav>
+
+        <main id="viewport">
+            <!-- Wallet Stats (Simulating the Sinter Economy) -->
+            <div id="wallet-overlay">
+                <div class="currency-stat">
+                    <div class="currency-value" id="sint-balance">1,240.50</div>
+                    <div class="currency-label">SINT Tokens</div>
+                </div>
+                <div class="currency-stat" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <div class="currency-value" id="fiat-balance">$42.00</div>
+                    <div class="currency-label">Fiat Credit</div>
+                </div>
+            </div>
+
+            <iframe src="sinter_login.html" id="view-login" class="active"></iframe>
+            <iframe src="sinter_feed.html" id="view-feed"></iframe>
+            <iframe src="sinter_architect.html" id="view-architect"></iframe>
+        </main>
+
+    </div>
+
+    <script>
+        function switchView(viewId) {
+            // Animate transition
+            const gate = document.getElementById('shimmer-gate');
+            gate.style.display = 'block';
+            gate.style.animation = 'shimmer-fade 0.8s forwards';
+
+            setTimeout(() => {
+                // Update icons
+                const icons = document.querySelectorAll('.nav-icon');
+                icons.forEach(icon => icon.classList.remove('active'));
+                
+                // Update active icon based on index (rough mapping)
+                if (viewId === 'login') icons[0].classList.add('active');
+                if (viewId === 'feed') icons[1].classList.add('active');
+                if (viewId === 'architect') icons[2].classList.add('active');
+
+                // Switch frames
+                const frames = document.querySelectorAll('iframe');
+                frames.forEach(f => f.classList.remove('active'));
+                document.getElementById('view-' + viewId).classList.add('active');
+                
+                gate.style.display = 'none';
+                gate.style.animation = 'none';
+            }, 400);
+        }
+
+        // Simulate real-time economy updates
+        setInterval(() => {
+            const balance = document.getElementById('sint-balance');
+            let val = parseFloat(balance.innerText.replace(',', ''));
+            val += (Math.random() * 0.05); // Tiny background earnings from node relay
+            balance.innerText = val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }, 3000);
+
+    </script>
+</body>
+</html>

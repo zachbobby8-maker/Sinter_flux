@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinter | Architect Task-Pool (Fluid OS v1.0.4)</title>
+    <style>
+        :root {
+            --bg-obsidian: #010101;
+            --sinter-neon: #00f0ff;
+            --sinter-accent: #0044ff;
+            --sinter-dim: rgba(0, 240, 255, 0.1);
+            --text-main: #e0faff;
+            --panel-bg: rgba(5, 5, 10, 0.85);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-obsidian);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ambient Fluid Background */
+        #ambient-manifold {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, #001a33 0%, #010101 80%);
+            z-index: -1;
+        }
+
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--sinter-dim);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .node-info {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--sinter-neon);
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1px;
+            background: var(--sinter-dim);
+            overflow: hidden;
+        }
+
+        /* Sidebar: The Task-Pool List */
+        #task-sidebar {
+            background: var(--bg-obsidian);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+
+        .task-card {
+            padding: 15px;
+            background: rgba(0, 240, 255, 0.02);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .task-card:hover, .task-card.active {
+            background: rgba(0, 240, 255, 0.08);
+            border-color: var(--sinter-neon);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+
+        .task-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .task-meta {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        /* Main Workspace: Fluid OS Programming Interface */
+        #workspace {
+            display: grid;
+            grid-template-rows: 1fr 200px;
+            background: #020202;
+        }
+
+        /* Code Editor Mockup */
+        #editor-container {
+            position: relative;
+            padding: 20px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        #code-area {
+            width: 100%;
+            height: calc(100% - 40px);
+            background: transparent;
+            border: none;
+            color: #00ffcc;
+            font-family: inherit;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        /* Terminal/Console Output */
+        #terminal {
+            background: #000;
+            border-top: 1px solid var(--sinter-dim);
+            padding: 15px;
+            font-size: 0.7rem;
+            color: #888;
+            overflow-y: auto;
+        }
+
+        .terminal-line { margin-bottom: 5px; }
+        .terminal-line.success { color: var(--sinter-neon); }
+        .terminal-line.system { color: #f0f; }
+
+        .action-bar {
+            position: absolute;
+            bottom: 240px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 25px;
+            background: transparent;
+            border: 1px solid var(--sinter-neon);
+            color: var(--sinter-neon);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .action-btn:hover {
+            background: var(--sinter-neon);
+            color: var(--bg-obsidian);
+            box-shadow: 0 0 20px var(--sinter-neon);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--sinter-dim); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sinter-neon); }
+
+    </style>
+</head>
+<body>
+
+    <div id="ambient-manifold"></div>
+
+    <header>
+        <div class="node-info">SINTER // ARCHITECT_MODE // FLUID_OS v1.0.4</div>
+        <div class="node-info" style="opacity: 0.6;">NODE_STATUS: HIGH-FIDELITY // ZONE: LAGOS_RESONANCE</div>
+    </header>
+
+    <main>
+        <aside id="task-sidebar">
+            <h3>TASK_POOL [6]</h3>
+            
+            <div class="task-card active">
+                <div class="task-title">Lattice Mesh Optimizer</div>
+                <div class="task-meta">Reward: 450.00 SINT // Difficulty: Braid-Level 4</div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">Kigali-Fiber Submanifold</div>
+                <div class="task-meta">Reward: 1200.00 SINT // Difficulty: Braid-Level 7</div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">Visual Flux Shader v2</div>
+                <div class="task-meta">Reward: 300.00 SINT // Difficulty: Braid-Level 2</div>
+            </div>
+
+            <div class="task-card">
+                <div class="task-title">Identity Registry Patch</div>
+                <div class="task-meta">Reward: 85.00 SINT // Difficulty: Braid-Level 1</div>
+            </div>
+
+        </aside>
+
+        <section id="workspace">
+            <div id="editor-container">
+                <div class="editor-header">
+                    <span>File: mesh_optimize.flux</span>
+                    <span>Language: Fluid_Script v1.0</span>
+                </div>
+                <textarea id="code-area" spellcheck="false">
+/* 
+ * Sinter Fluid OS - Architect Workspace
+ * Task: Lattice Mesh Optimizer
+ */
+
+import { Lattice, Vortex } from "@sinter/core";
+
+export async function optimize(node_id) {
+    const manifold = await Lattice.getManifold(node_id);
+    
+    // Applying Fluidic Smoothing to the Lagos Resonance Zone
+    const result = manifold.braid((braid) => {
+        return braid.resonate({
+            frequency: 39420, // 39.42 kHz
+            shimmer: 0.106,
+            damping: "kinetic"
+        });
+    });
+
+    if (result.integrity > 0.98) {
+        return Vortex.emit(result);
+    }
+    
+    throw new Error("PHASE_LOCK_FAILURE: Integrity below threshold");
+}
+                </textarea>
+            </div>
+
+            <div id="terminal">
+                <div class="terminal-line system">[SYSTEM] Fluid OS Environment initialized.</div>
+                <div class="terminal-line">[LOG] Connecting to Lagos Resonance Zone Relay...</div>
+                <div class="terminal-line success">[LOG] Connection Stable. Latency: 4ms.</div>
+                <div class="terminal-line">[LOG] Loading Lattice core modules...</div>
+                <div class="terminal-line success">[OK] Ready for Pulse compilation.</div>
+                <div class="terminal-line">&gt; _</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="action-bar">
+        <button class="action-btn" onclick="runCode()">Run Pulse</button>
+        <button class="action-btn" style="border-color: #f0f; color: #f0f;">Submit to Pool</button>
+    </div>
+
+    <script>
+        function runCode() {
+            const term = document.getElementById('terminal');
+            const lines = [
+                "[COMPILE] Analyzing Fluid_Script patterns...",
+                "[COMPILE] Resolving Braid dependencies...",
+                "[EXEC] Injecting code into Local Lattice...",
+                "[SUCCESS] Resonance achieved at 39,420 Hz.",
+                "[SUCCESS] Manifold integrity verified: 0.9982"
+            ];
+
+            let delay = 0;
+            lines.forEach(line => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 'terminal-line' + (line.includes('SUCCESS') ? ' success' : '');
+                    div.innerText = line;
+                    term.appendChild(div);
+                    term.scrollTop = term.scrollHeight;
+                }, delay);
+                delay += 800;
+            });
+        }
+    </script>
+
+</body>
+</html>

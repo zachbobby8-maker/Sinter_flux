@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SINTER | 5IR Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --obsidian: #020202; --cyan: #00f0ff; --magenta: #ff00f0; --gold: #ffcc00; --red: #ff3b3b;
+            --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.1);
+        }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--obsidian); color: #e0e0e0;
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
+        }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 12px; }
+        .neon-text-cyan { text-shadow: 0 0 10px rgba(0, 240, 255, 0.7); color: var(--cyan); }
+        .hidden { display: none; }
+        .page { transition: opacity 0.5s ease; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Specialized UI Components */
+        .work-unit-card { border: 1px solid var(--border); transition: 0.3s; background: rgba(255,255,255,0.02); }
+        .work-unit-card:hover { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+        .weave-grid { background-image: linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
+        .animate-spin-slow { animation: spin 8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- NAVIGATION -->
+    <nav class="flex justify-between items-center px-6 py-4 sticky top-0 z-50 glass border-b border-white/5">
+        <div class="text-2xl font-bold tracking-tighter neon-text-cyan cursor-pointer" onclick="showPage('auth-section')">SINTER_</div>
+        <div class="hidden md:flex space-x-8 text-[10px] uppercase tracking-widest font-bold">
+            <a href="#" onclick="showPage('forge-section')" class="hover:text-cyan-400 transition">Forge</a>
+            <a href="#" onclick="showPage('vault-section')" class="hover:text-gold-500 transition">Vault</a>
+            <a href="#" onclick="showPage('sovereign-section')" class="hover:text-red-500 transition">Command</a>
+            <a href="#" onclick="showPage('profile-section')" class="text-magenta-500">Node</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- 1. AUTH -->
+        <section id="auth-section" class="page max-w-md w-full p-10 glass text-center">
+            <h1 class="text-4xl font-light mb-2 tracking-tighter">INITIALIZE <span class="text-cyan-400">NODE</span></h1>
+            <p class="text-gray-500 text-xs mb-8 italic uppercase tracking-widest">Bypassing 4th Rev Guardrails...</p>
+            <input type="text" placeholder="BIOMETRIC HASH / NODE ID" class="w-full bg-black/60 border border-white/10 p-4 rounded-lg mb-6 text-center mono text-sm focus:border-cyan-500 outline-none">
+            <button onclick="showPage('profile-section')" class="w-full bg-cyan-500 text-black font-bold py-4 rounded-lg hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition">SYNC TO LATTICE</button>
+        </section>
+
+        <!-- 2. PROFILE -->
+        <section id="profile-section" class="page hidden max-w-5xl w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 p-8 glass flex flex-col items-center">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-500 to-magenta-500 mb-6 shadow-xl shadow-cyan-500/20"></div>
+                <h2 class="text-xl font-bold">ARCHITECT #8842</h2>
+                <div class="w-full mt-6 space-y-3">
+                    <div class="p-3 bg-white/5 rounded border border-white/5 flex justify-between">
+                        <span class="text-[9px] text-gray-500 uppercase">Resonance</span>
+                        <span class="text-xs font-mono text-cyan-400">842.09</span>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded border border-white/5 flex justify-between">
+                        <span class="text-[9px] text-gray-500 uppercase">Syntropy</span>
+                        <span class="text-xs font-mono text-gold-500">12.4K $PHON</span>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-2 space-y-6">
+                <div class="p-8 rounded-2xl bg-gradient-to-br from-blue-900/40 to-black border border-cyan-500/30">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-cyan-400 mb-2">Liquid Credit Injection</h3>
+                    <p class="text-4xl font-mono mb-4">$4,500.00</p>
+                    <button class="bg-white text-black px-6 py-2 rounded font-bold text-[10px] uppercase">Request Transfer</button>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showPage('forge-section')" class="p-6 glass border-l-2 border-cyan-500 text-left hover:bg-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase">Access</p>
+                        <p class="font-bold">THE FORGE</p>
+                    </button>
+                    <button onclick="showPage('vault-section')" class="p-6 glass border-l-2 border-gold-500 text-left hover:bg-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase">Access</p>
+                        <p class="font-bold">THE VAULT</p>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. THE FORGE / STUDIO -->
+        <section id="forge-section" class="page hidden max-w-6xl w-full flex flex-col">
+            <div class="flex justify-between items-end mb-8 px-4">
+                <div>
+                    <h2 class="text-3xl font-bold italic">THE FORGE</h2>
+                    <p class="text-cyan-400 text-[10px] mono uppercase tracking-widest">Real-Time Labor Optimization</p>
+                </div>
+                <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[10px] uppercase">+ NEW WEAVE</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500">
+                    <div class="flex justify-between mb-4"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
+                    <h4 class="font-bold mb-2">Lagos Grid Calibration</h4>
+                    <p class="text-xs text-gray-400 mb-6">Balance local 5G-NSA node distribution for the northern sector.</p>
+                    <button class="w-full py-2 border border-cyan-500 text-cyan-400 text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition">Initialize Unit</button>
+                </div>
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500">
+                    <div class="flex justify-between mb-4"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
+                    <h4 class="font-bold mb-2">Vortex Noise Filter</h4>
+                    <p class="text-xs text-gray-400 mb-6">Prune 4th Rev entropic data from the regional manifold.</p>
+                    <button class="w-full py-2 border border-magenta-500 text-magenta-500 text-[10px] font-bold uppercase hover:bg-magenta-500 hover:text-white transition">Initialize Unit</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. FLUX WEAVE STUDIO -->
+        <section id="studio-section" class="page hidden w-full h-[70vh] glass relative flex flex-col items-center justify-center overflow-hidden">
+            <div class="weave-grid absolute inset-0 opacity-10"></div>
+            <div class="relative z-10 text-center">
+                <h2 class="text-4xl font-bold italic mb-2">WEAVE STUDIO</h2>
+                <p class="text-cyan-400 text-[10px] mb-12 mono uppercase tracking-widest">Harmonizing Reality...</p>
+                <div class="flex space-x-6">
+                    <div class="w-16 h-16 rounded-full border border-dashed border-cyan-500 flex items-center justify-center text-[8px] text-cyan-400 cursor-move">LOGIC</div>
+                    <div class="w-16 h-16 rounded-full border border-dashed border-magenta-500 flex items-center justify-center text-[8px] text-magenta-500 cursor-move">DATA</div>
+                    <div class="w-16 h-16 rounded-full border border-dashed border-gold-500 flex items-center justify-center text-[8px] text-gold-500 cursor-move">VALUE</div>
+                </div>
+                <div class="mt-12 w-24 h-24 rounded-full border border-white/20 flex items-center justify-center animate-pulse"><span class="text-[8px] text-gray-500">THE LOOM</span></div>
+            </div>
+        </section>
+
+        <!-- 5. THE VAULT / BRIDGE -->
+        <section id="vault-section" class="page hidden max-w-4xl w-full p-8 glass">
+            <h2 class="text-3xl font-bold mb-2 tracking-tighter">THE VAULT</h2>
+            <p class="text-gold-500 text-[10px] mono mb-10 uppercase tracking-widest">// ZERO-FILTER ASSET BRIDGE</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="space-y-4">
+                    <div class="p-4 bg-white/5 border border-white/10 rounded-lg">
+                        <p class="text-[9px] text-gray-500 uppercase mb-2">Input (4IR Asset)</p>
+                        <select class="bg-transparent font-bold text-lg outline-none w-full"><option>ETH</option><option>USDT</option></select>
+                    </div>
+                    <div class="flex justify-center py-2"><span class="text-gold-500 animate-bounce">▼</span></div>
+                    <div class="p-4 bg-gold-500/10 border border-gold-500/30 rounded-lg">
+                        <p class="text-[9px] text-gold-500 uppercase mb-2">Output ($PHON)</p>
+                        <p class="text-xl font-mono">0.00</p>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-end space-y-4">
+                    <div class="text-[10px] mono text-gray-500 space-y-1">
+                        <div class="flex justify-between"><span>Visibility:</span><span class="text-red-500">NONE</span></div>
+                        <div class="flex justify-between"><span>Speed:</span><span class="text-cyan-400">INSTANT</span></div>
+                    </div>
+                    <button class="w-full py-4 bg-gold-500 text-black font-bold text-xs uppercase hover:shadow-[0_0_20px_rgba(255,204,0,0.4)] transition">Braid Assets</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SOVEREIGN COMMAND -->
+        <section id="sovereign-section" class="page hidden max-w-6xl w-full p-8 glass border-t-2 border-red-600">
+            <h2 class="text-3xl font-bold italic mb-2">SOVEREIGN_COMMAND</h2>
+            <p class="text-red-500 text-[10px] mono mb-10 uppercase tracking-widest">// RESOURCE OPTIMIZATION ENGINE</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="h-48 glass border border-red-500/20 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-red-900/10 animate-pulse"></div>
+                    <span class="text-[10px] mono text-red-500 z-10">SCANNING LATTICE TOPOGRAPHY...</span>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase mb-2">Entropy Suppression (Taxation)</p>
+                        <input type="range" class="w-full accent-red-600">
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-gray-500 uppercase mb-2">Vortex Intensity (Output)</p>
+                        <input type="range" class="w-full accent-cyan-400">
+                    </div>
+                    <button class="w-full py-3 border border-red-600 text-red-600 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition">Apply Global Calibration</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = Array.from({ length: 80 }, () => ({
+                x: Math.random() * width, y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                life: Math.random() * 100 + 100
+            }));
+        }
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.life--;
+                if (p.life <= 0) { p.x = Math.random() * width; p.y = Math.random() * height; p.life = 200; }
+                ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2); ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('resize', init);
+        init(); animate();
+    </script>
+</body>
+</html>

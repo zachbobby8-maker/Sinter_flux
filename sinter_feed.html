@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sinter | The Fluid Feed</title>
+    <style>
+        :root { --bg: #000; --cyan: #0ff; --magenta: #f0f; --text: #fff; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
+        
+        nav { 
+            position: fixed; top: 0; width: 100%; height: 60px; 
+            background: #000; border-bottom: 1px solid var(--cyan); 
+            display: flex; align-items: center; padding: 0 15px; 
+            box-sizing: border-box; z-index: 100; 
+        }
+        
+        .logo { font-size: 1.2rem; font-weight: bold; color: var(--cyan); letter-spacing: 2px; }
+        
+        main { padding: 80px 15px; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        
+        .pulse-card { 
+            background: #111; border: 1px solid #333; 
+            border-left: 5px solid var(--magenta); 
+            padding: 20px; 
+        }
+        
+        .node-name { font-weight: bold; font-size: 0.9rem; color: var(--cyan); }
+        .node-tag { font-size: 0.7rem; opacity: 0.6; margin-bottom: 10px; }
+        .pulse-content { font-size: 1.1rem; line-height: 1.4; margin-bottom: 15px; }
+        
+        .pulse-footer { font-size: 0.8rem; color: var(--cyan); border-top: 1px solid #222; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <nav><div class="logo">SINTER_FEED</div></nav>
+    <main>
+        <div class="pulse-card">
+            <div class="node-name">Architect_Bobby</div>
+            <div class="node-tag">LATTICE_ENTITY // VERIFIED</div>
+            <div class="pulse-content">We all enter the world 'naked and alone.' Success isn't distance traveled—it's Depth achieved. 👊🌀</div>
+            <div class="pulse-footer">⌬ Resonate | Ξ Interlace</div>
+        </div>
+        <div class="pulse-card">
+            <div class="node-name">Architect_Bobby</div>
+            <div class="node-tag">LATTICE_ENTITY</div>
+            <div class="pulse-content">The subconscious is a powerful, faithful, but blind engine. It renders the frequency you feed it. 👁️🌀</div>
+            <div class="pulse-footer">⌬ Resonate | Ξ Interlace</div>
+        </div>
+        <div class="pulse-card">
+            <div class="node-name">Architect_Bobby</div>
+            <div class="node-tag">LATTICE_ENTITY</div>
+            <div class="pulse-content">Shipping mass to the moon is a 4th Rev error. We ship a Jar of Spiders and a Resonance Signal. 🕷️🌕</div>
+            <div class="pulse-footer">⌬ Resonate | Ξ Interlace</div>
+        </div>
+    </main>
+</body>
+</html>
