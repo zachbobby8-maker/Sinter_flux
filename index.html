@@ -18,6 +18,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .btn-active:active { transform: scale(0.95); opacity: 0.8; }
         .pulse-card { border-left: 2px solid var(--border); transition: 0.5s; background: rgba(255,255,255,0.01); margin-bottom: 12px; }
+        .work-unit-card { border: 1px solid var(--border); transition: 0.3s; background: rgba(255,255,255,0.01); cursor: pointer; }
+        .work-unit-card:hover { border-color: var(--cyan); background: rgba(0,240,255,0.05); }
         .weave-grid { background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 30px 30px; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
@@ -29,11 +31,20 @@
 
     <!-- NAVIGATION -->
     <nav class="flex justify-between items-center px-6 py-4 sticky top-0 z-50 glass border-b border-white/5">
-        <div class="text-xl font-bold tracking-tighter neon-text-cyan cursor-pointer" onclick="showPage('auth-section')">SINTER_</div>
-        <div class="flex space-x-4 md:space-x-6 text-[8px] md:text-[9px] uppercase tracking-widest font-bold overflow-x-auto">
+        <div class="flex items-center gap-4">
+            <div class="text-xl font-bold tracking-tighter neon-text-cyan cursor-pointer" onclick="showPage('auth-section')">SINTER_</div>
+            <!-- THE MASTER SWITCH -->
+            <div class="flex items-center gap-2 bg-white/5 px-2 py-1 rounded-full border border-white/10">
+                <span id="mode-label" class="text-[6px] mono uppercase text-gray-500">Manual</span>
+                <button onclick="toggleMode()" id="mode-switch" class="w-7 h-3 bg-gray-700 rounded-full relative transition-all">
+                    <div id="mode-knob" class="absolute left-0.5 top-0.5 w-2 h-2 bg-white rounded-full transition-all"></div>
+                </button>
+                <span class="text-[6px] mono uppercase text-magenta-500">Auto</span>
+            </div>
+        </div>
+        <div class="flex space-x-4 text-[8px] md:text-[9px] uppercase tracking-widest font-bold overflow-x-auto">
             <a href="javascript:void(0)" onclick="showPage('manifold-section')" class="hover:text-cyan-400">Manifold</a>
             <a href="javascript:void(0)" onclick="showPage('forge-section')" class="hover:text-cyan-400">Forge</a>
-            <a href="javascript:void(0)" onclick="showPage('vault-section')" class="hover:text-gold-500">Vault</a>
             <a href="javascript:void(0)" onclick="showPage('vortex-section')" class="text-magenta-500">Vortex</a>
             <a href="javascript:void(0)" onclick="showPage('profile-section')" class="text-gray-400">Node</a>
         </div>
@@ -81,7 +92,55 @@
             </div>
         </section>
 
-        <!-- 4. VORTEX AI MENU -->
+        <!-- 4. THE FORGE -->
+        <section id="forge-section" class="page hidden max-w-5xl w-full">
+            <div class="flex justify-between items-end mb-6 px-2">
+                <div><h2 class="text-2xl font-bold italic">THE FORGE</h2><p class="text-cyan-400 text-[9px] mono uppercase">Active Work-Units</p></div>
+                <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[9px] uppercase">+ NEW WEAVE</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500" onclick="initWorkUnit('INFRA-902', 450, 1.2)">
+                    <div class="flex justify-between mb-2"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
+                    <h4 class="font-bold text-sm mb-1">Lagos Grid Calibration</h4>
+                    <p class="text-[11px] text-gray-400">Optimize local 5G-NSA node distribution.</p>
+                </div>
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500" onclick="initWorkUnit('DATA-441', 1200, 4.8)">
+                    <div class="flex justify-between mb-2"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
+                    <h4 class="font-bold text-sm mb-1">Vortex Noise Filter</h4>
+                    <p class="text-[11px] text-gray-400">Prune 4th Rev entropic data from the manifold.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. FLUX WEAVE STUDIO -->
+        <section id="studio-section" class="page hidden w-full h-[85vh] flex flex-col gap-4">
+            <div class="w-full glass p-4 flex justify-between items-center border-b-2 border-gold-500">
+                <div class="flex items-center space-x-4">
+                    <div class="text-[9px] mono uppercase text-gold-500">Task: <span id="studio-task-id" class="text-white">---</span></div>
+                    <div class="text-[9px] mono uppercase text-gold-500">Reward: <span id="studio-task-reward" class="text-white">---</span></div>
+                </div>
+                <div class="text-[9px] mono text-gray-500 uppercase">Balance: <span id="studio-phon-val" class="text-white">---</span></div>
+            </div>
+            <div class="flex-grow flex flex-col md:flex-row gap-4 overflow-hidden">
+                <div class="w-full md:w-48 glass p-4 flex md:flex-col gap-2">
+                    <button onclick="addThread('LOGIC')" class="flex-1 p-3 border border-cyan-500/30 rounded text-[9px] font-bold text-cyan-400 btn-active uppercase">Logic</button>
+                    <button onclick="addThread('DATA')" class="flex-1 p-3 border border-magenta-500/30 rounded text-[9px] font-bold text-magenta-400 btn-active uppercase">Data</button>
+                    <button onclick="addThread('VALUE')" class="flex-1 p-3 border border-gold-500/30 rounded text-[9px] font-bold text-gold-400 btn-active uppercase">Value</button>
+                </div>
+                <div class="flex-grow glass relative weave-grid flex flex-col items-center justify-center border border-white/5 p-4">
+                    <div id="weave-status-text" class="text-[10px] mono text-cyan-400 mb-8 uppercase text-center">Ready to Initialize...</div>
+                    <div class="relative w-24 h-24 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center">
+                        <div id="res-pct" class="text-xl font-mono text-white">0%</div>
+                        <svg class="absolute inset-0 w-full h-full -rotate-90">
+                            <circle id="res-circle" cx="48" cy="48" r="44" stroke="currentColor" stroke-width="2" fill="transparent" class="text-cyan-500 transition-all duration-500" stroke-dasharray="276" stroke-dashoffset="276"></circle>
+                        </svg>
+                    </div>
+                    <button onclick="commitWeave()" class="mt-8 w-full max-w-xs py-4 bg-white text-black font-bold text-[10px] uppercase btn-active">Commit to Lattice</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. VORTEX AI MENU -->
         <section id="vortex-section" class="page hidden max-w-2xl w-full flex flex-col gap-4">
             <div class="glass p-6 border-l-4 border-l-magenta-500 relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 opacity-10 text-4xl italic">96%</div>
@@ -109,10 +168,6 @@
             </div>
         </section>
 
-        <!-- (OTHER SECTIONS) -->
-        <section id="forge-section" class="page hidden w-full max-w-4xl glass p-8 text-center"><h2 class="text-xl italic">The Forge is live.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-cyan-400 uppercase">Return</button></section>
-        <section id="vault-section" class="page hidden max-w-md w-full glass p-8 text-center"><h2 class="text-xl italic text-gold-500">Vault Secure.</h2><button onclick="showPage('profile-section')" class="mt-4 text-[9px] text-gold-400 uppercase">Return</button></section>
-
     </main>
 
     <script>
@@ -133,7 +188,8 @@
 
         // CORE STATE
         let state = JSON.parse(localStorage.getItem('sinter_state')) || {
-            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: []
+            user: "ARCHITECT_8842", resonance: 842.09, phon: 12400.00, pulses: [],
+            autoPilot: true, currentWeave: 0, activeTask: null, activeReward: 0, activeResReward: 0
         };
 
         function saveState() { localStorage.setItem('sinter_state', JSON.stringify(state)); updateUI(); }
@@ -142,8 +198,38 @@
             document.getElementById('user-display-name').innerText = state.user;
             document.getElementById('res-score').innerText = state.resonance.toFixed(2);
             document.getElementById('phon-balance').innerText = state.phon.toLocaleString() + " $PHON";
+            document.getElementById('studio-phon-val').innerText = state.phon.toLocaleString() + " $PHON";
             document.getElementById('credit-limit').innerText = "$" + (state.resonance * 10.5).toLocaleString();
+            document.getElementById('res-pct').innerText = state.currentWeave + "%";
+            document.getElementById('studio-task-id').innerText = state.activeTask || "NONE";
+            document.getElementById('studio-task-reward').innerText = state.activeReward + " $PHON";
+            
+            const offset = 276 - (276 * state.currentWeave / 100);
+            if(document.getElementById('res-circle')) document.getElementById('res-circle').style.strokeDashoffset = offset;
+            
             renderFeed();
+            updateModeUI();
+        }
+
+        function toggleMode() {
+            state.autoPilot = !state.autoPilot;
+            saveState();
+        }
+
+        function updateModeUI() {
+            const knob = document.getElementById('mode-knob');
+            const bg = document.getElementById('mode-switch');
+            const label = document.getElementById('mode-label');
+            
+            if(state.autoPilot) {
+                knob.style.left = '16px';
+                bg.style.backgroundColor = 'var(--magenta)';
+                label.style.color = '#555';
+            } else {
+                knob.style.left = '2px';
+                bg.style.backgroundColor = '#374151';
+                label.style.color = 'var(--cyan)';
+            }
         }
 
         function login() {
@@ -166,42 +252,45 @@
             input.value = ''; saveState();
         }
 
-        // AI AUTO-PULSE GENERATOR
         function generateAIPulse() {
+            if(!state.autoPilot) return;
             const randomUser = aiUsers[Math.floor(Math.random() * aiUsers.length)];
             const randomMsg = aiMessages[Math.floor(Math.random() * aiMessages.length)];
-            
-            state.pulses.unshift({
-                user: randomUser,
-                text: randomMsg,
-                resonance: Math.floor(Math.random() * 500 + 100),
-                isUser: false,
-                isAI: true
-            });
-            
-            // Keep only last 20 pulses to prevent memory bloat
+            state.pulses.unshift({ user: randomUser, text: randomMsg, resonance: Math.floor(Math.random() * 500 + 100), isUser: false, isAI: true });
             if(state.pulses.length > 20) state.pulses = state.pulses.slice(0, 20);
-            
             saveState();
         }
-
-        // Start AI Pulse Generator every 20 seconds
         setInterval(generateAIPulse, 20000);
 
         function renderFeed() {
             const feed = document.getElementById('manifold-feed');
             let content = `<div class="pulse-card p-5 glass border-l-4 border-l-gold-500"><div class="flex justify-between mb-1"><span class="text-[9px] text-gold-500 mono font-bold">@SOVEREIGN_ADMIN</span><span class="text-[8px] text-gray-600">SYSTEM</span></div><p class="text-xs text-gray-300 uppercase font-bold tracking-tight">System Online. Global Resonance Stable.</p></div>`;
-            
             content += state.pulses.map(p => {
                 const colorClass = p.isUser ? 'border-l-cyan-500' : (p.isAI ? 'border-l-magenta-500' : 'border-l-white/10');
                 const textClass = p.isUser ? 'text-cyan-400' : (p.isAI ? 'text-magenta-400' : 'text-gray-500');
                 return `<div class="pulse-card p-5 glass ${colorClass}"><div class="flex justify-between mb-1"><span class="text-[9px] ${textClass} mono font-bold">${p.user}</span><span class="text-[8px] text-gray-600">${p.resonance} R</span></div><p class="text-xs text-gray-300">${p.text}</p></div>`;
             }).join('');
-            
             feed.innerHTML = content;
         }
 
-        // VORTEX AI LOGIC
+        // STUDIO LOGIC
+        function initWorkUnit(id, reward, resReward) {
+            state.activeTask = id; state.activeReward = reward; state.activeResReward = resReward; state.currentWeave = 0;
+            showPage('studio-section'); saveState();
+        }
+
+        function addThread(type) {
+            if(state.currentWeave < 100) { state.currentWeave += 20; updateUI(); }
+        }
+
+        function commitWeave() {
+            if(state.currentWeave >= 100) {
+                state.resonance += state.activeResReward; state.phon += state.activeReward; state.currentWeave = 0; state.activeTask = null;
+                alert("SUCCESS: SYNTROPY INJECTED."); showPage('profile-section'); saveState();
+            }
+        }
+
+        // VORTEX AI
         function aiAction(action) {
             const log = document.getElementById('ai-log');
             const p = document.createElement('p');
@@ -217,15 +306,15 @@
             }, 1000);
         }
 
-        // CREDIT LOGIC
+        // CREDIT
         function requestCredit() {
             const amount = state.resonance * 2;
             state.phon += amount;
-            alert(`LIQUID CREDIT INJECTED: +${amount.toFixed(0)} $PHON. Your debt is to the future.`);
+            alert(`LIQUID CREDIT INJECTED: +${amount.toFixed(0)} $PHON.`);
             saveState();
         }
 
-        // BG VORTEX
+        // BG
         const canvas = document.getElementById('bg-canvas'); const ctx = canvas.getContext('2d');
         let width, height, particles = [];
         function initBg() {
