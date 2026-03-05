@@ -27,9 +27,11 @@
         /* Specialized UI Components */
         .work-unit-card { border: 1px solid var(--border); transition: 0.3s; background: rgba(255,255,255,0.02); }
         .work-unit-card:hover { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
-        .weave-grid { background-image: linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; }
-        .animate-spin-slow { animation: spin 8s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .weave-grid { background-image: linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px); background-size: 50px 50px; }
+        
+        /* Draggable Nodes */
+        .node { cursor: grab; transition: transform 0.2s; }
+        .node:active { cursor: grabbing; transform: scale(1.1); }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -92,43 +94,70 @@
             </div>
         </section>
 
-        <!-- 3. THE FORGE / STUDIO -->
+        <!-- 3. THE FORGE (WORK-UNITS) -->
         <section id="forge-section" class="page hidden max-w-6xl w-full flex flex-col">
             <div class="flex justify-between items-end mb-8 px-4">
                 <div>
                     <h2 class="text-3xl font-bold italic">THE FORGE</h2>
-                    <p class="text-cyan-400 text-[10px] mono uppercase tracking-widest">Real-Time Labor Optimization</p>
+                    <p class="text-cyan-400 text-[10px] mono uppercase tracking-widest">Active System Optimization Requests</p>
                 </div>
                 <button onclick="showPage('studio-section')" class="bg-white text-black px-4 py-2 rounded font-bold text-[10px] uppercase">+ NEW WEAVE</button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+            <div id="wu-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+                <!-- Initial Work Units -->
                 <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-cyan-500">
                     <div class="flex justify-between mb-4"><span class="text-[9px] text-cyan-400 mono">#INFRA-902</span><span class="text-[9px] text-gray-500">HIGH YIELD</span></div>
                     <h4 class="font-bold mb-2">Lagos Grid Calibration</h4>
-                    <p class="text-xs text-gray-400 mb-6">Balance local 5G-NSA node distribution for the northern sector.</p>
-                    <button class="w-full py-2 border border-cyan-500 text-cyan-400 text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition">Initialize Unit</button>
+                    <p class="text-xs text-gray-400 mb-6 h-10 overflow-hidden">Balance local 5G-NSA node distribution for the northern sector.</p>
+                    <div class="flex justify-between text-[10px] mb-4 mono"><span>REWARD: 450 $PHON</span><span>RESONANCE: +1.2</span></div>
+                    <button onclick="showPage('studio-section')" class="w-full py-2 border border-cyan-500 text-cyan-400 text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition">Initialize Unit</button>
                 </div>
                 <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-magenta-500">
                     <div class="flex justify-between mb-4"><span class="text-[9px] text-magenta-500 mono">#DATA-441</span><span class="text-[9px] text-gray-500">PRIORITY</span></div>
                     <h4 class="font-bold mb-2">Vortex Noise Filter</h4>
-                    <p class="text-xs text-gray-400 mb-6">Prune 4th Rev entropic data from the regional manifold.</p>
-                    <button class="w-full py-2 border border-magenta-500 text-magenta-500 text-[10px] font-bold uppercase hover:bg-magenta-500 hover:text-white transition">Initialize Unit</button>
+                    <p class="text-xs text-gray-400 mb-6 h-10 overflow-hidden">Prune 4th Rev entropic data from the regional manifold.</p>
+                    <div class="flex justify-between text-[10px] mb-4 mono"><span>REWARD: 1,200 $PHON</span><span>RESONANCE: +4.8</span></div>
+                    <button onclick="showPage('studio-section')" class="w-full py-2 border border-magenta-500 text-magenta-500 text-[10px] font-bold uppercase hover:bg-magenta-500 hover:text-white transition">Initialize Unit</button>
+                </div>
+                <div class="work-unit-card p-6 rounded-xl border-l-4 border-l-gold-500 opacity-60">
+                    <div class="flex justify-between mb-4"><span class="text-[9px] text-gold-500 mono">#VAULT-112</span><span class="text-[9px] text-gray-500">LOCKED</span></div>
+                    <h4 class="font-bold mb-2 text-gray-500">Synthetic Credit Loop</h4>
+                    <p class="text-xs text-gray-600 mb-6 h-10 overflow-hidden">Audit regional liquidity bridges for the new sector expansion.</p>
+                    <p class="text-[10px] text-red-500 mb-4 mono uppercase">Requires Resonance: 900+</p>
+                    <button class="w-full py-2 border border-gray-700 text-gray-700 text-[10px] font-bold uppercase cursor-not-allowed">🔒 Locked</button>
                 </div>
             </div>
         </section>
 
-        <!-- 4. FLUX WEAVE STUDIO -->
-        <section id="studio-section" class="page hidden w-full h-[70vh] glass relative flex flex-col items-center justify-center overflow-hidden">
-            <div class="weave-grid absolute inset-0 opacity-10"></div>
-            <div class="relative z-10 text-center">
-                <h2 class="text-4xl font-bold italic mb-2">WEAVE STUDIO</h2>
-                <p class="text-cyan-400 text-[10px] mb-12 mono uppercase tracking-widest">Harmonizing Reality...</p>
-                <div class="flex space-x-6">
-                    <div class="w-16 h-16 rounded-full border border-dashed border-cyan-500 flex items-center justify-center text-[8px] text-cyan-400 cursor-move">LOGIC</div>
-                    <div class="w-16 h-16 rounded-full border border-dashed border-magenta-500 flex items-center justify-center text-[8px] text-magenta-500 cursor-move">DATA</div>
-                    <div class="w-16 h-16 rounded-full border border-dashed border-gold-500 flex items-center justify-center text-[8px] text-gold-500 cursor-move">VALUE</div>
+        <!-- 4. FLUX WEAVE STUDIO (LOOM) -->
+        <section id="studio-section" class="page hidden w-full h-[80vh] flex flex-col md:flex-row gap-4">
+            
+            <!-- Left Panel: Tool Palette -->
+            <div class="w-full md:w-64 glass p-6 flex flex-col gap-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500">Thread Palette</h3>
+                <div class="node p-4 bg-cyan-500/10 border border-cyan-500/30 rounded text-cyan-400 text-xs font-bold text-center" draggable="true" ondragstart="drag(event)" id="logic-node">LOGIC_GATE</div>
+                <div class="node p-4 bg-magenta-500/10 border border-magenta-500/30 rounded text-magenta-400 text-xs font-bold text-center" draggable="true" ondragstart="drag(event)" id="data-node">DATA_STREAM</div>
+                <div class="node p-4 bg-gold-500/10 border border-gold-500/30 rounded text-gold-400 text-xs font-bold text-center" draggable="true" ondragstart="drag(event)" id="value-node">VALUE_ESCROW</div>
+                
+                <div class="mt-auto p-4 bg-white/5 rounded">
+                    <p class="text-[9px] text-gray-500 uppercase">Resonance Potential</p>
+                    <p id="res-meter" class="text-xl font-mono text-cyan-400">45%</p>
                 </div>
-                <div class="mt-12 w-24 h-24 rounded-full border border-white/20 flex items-center justify-center animate-pulse"><span class="text-[8px] text-gray-500">THE LOOM</span></div>
+            </div>
+
+            <!-- Center: The Loom Workspace -->
+            <div class="flex-grow glass relative weave-grid flex items-center justify-center border-2 border-dashed border-white/5" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="absolute top-4 left-4 text-[9px] mono text-gray-600">WORKSPACE_ALPHA // READY_FOR_WEAVE</div>
+                <div id="drop-zone" class="w-32 h-32 rounded-full border border-cyan-500/20 flex items-center justify-center text-[9px] text-gray-600 uppercase">Drop Threads Here</div>
+            </div>
+
+            <!-- Right Panel: Commit -->
+            <div class="w-full md:w-64 glass p-6 flex flex-col">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500">Weave Status</h3>
+                <div id="weave-log" class="mt-4 flex-grow text-[9px] mono text-gray-500 space-y-2 overflow-y-auto">
+                    <p>> Awaiting initialization...</p>
+                </div>
+                <button class="mt-4 w-full py-3 bg-white text-black font-bold text-xs uppercase hover:bg-cyan-400 transition" onclick="commitWeave()">Commit to Lattice</button>
             </div>
         </section>
 
@@ -141,6 +170,7 @@
                     <div class="p-4 bg-white/5 border border-white/10 rounded-lg">
                         <p class="text-[9px] text-gray-500 uppercase mb-2">Input (4IR Asset)</p>
                         <select class="bg-transparent font-bold text-lg outline-none w-full"><option>ETH</option><option>USDT</option></select>
+                        <input type="text" placeholder="0.00" class="w-full bg-transparent text-right text-xl font-mono focus:outline-none mt-2">
                     </div>
                     <div class="flex justify-center py-2"><span class="text-gold-500 animate-bounce">▼</span></div>
                     <div class="p-4 bg-gold-500/10 border border-gold-500/30 rounded-lg">
@@ -163,18 +193,21 @@
             <h2 class="text-3xl font-bold italic mb-2">SOVEREIGN_COMMAND</h2>
             <p class="text-red-500 text-[10px] mono mb-10 uppercase tracking-widest">// RESOURCE OPTIMIZATION ENGINE</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="h-48 glass border border-red-500/20 flex items-center justify-center relative overflow-hidden">
+                <div class="h-48 glass border border-red-500/20 flex flex-col items-center justify-center relative overflow-hidden p-4">
                     <div class="absolute inset-0 bg-red-900/10 animate-pulse"></div>
-                    <span class="text-[10px] mono text-red-500 z-10">SCANNING LATTICE TOPOGRAPHY...</span>
+                    <p id="cmd-status" class="text-[10px] mono text-red-500 z-10 text-center uppercase tracking-widest">Scanning Regional Lattice Topography...</p>
+                    <div class="w-full mt-4 h-1 bg-white/5 rounded-full overflow-hidden z-10">
+                        <div class="h-full bg-red-600 animate-[loading_5s_infinite]"></div>
+                    </div>
                 </div>
                 <div class="space-y-6">
                     <div>
                         <p class="text-[9px] text-gray-500 uppercase mb-2">Entropy Suppression (Taxation)</p>
-                        <input type="range" class="w-full accent-red-600">
+                        <input type="range" class="w-full accent-red-600" oninput="updateCmd('Taxation', this.value)">
                     </div>
                     <div>
                         <p class="text-[9px] text-gray-500 uppercase mb-2">Vortex Intensity (Output)</p>
-                        <input type="range" class="w-full accent-cyan-400">
+                        <input type="range" class="w-full accent-cyan-400" oninput="updateCmd('Intensity', this.value)">
                     </div>
                     <button class="w-full py-3 border border-red-600 text-red-600 text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition">Apply Global Calibration</button>
                 </div>
@@ -183,21 +216,60 @@
 
     </main>
 
+    <footer class="p-4 text-center text-gray-700 text-[9px] uppercase tracking-[0.3em] glass border-t border-white/5">
+        SINTER // 5TH INDUSTRIAL REVOLUTION // LATTICE ACTIVE
+    </footer>
+
     <script>
+        // Page Navigation
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
         }
 
+        // Studio: Drag & Drop Logic
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            var log = document.getElementById('weave-log');
+            var resMeter = document.getElementById('res-meter');
+            var currentRes = parseInt(resMeter.innerText);
+
+            log.innerHTML += `<p>> Initializing ${data.replace('-node', '').toUpperCase()} thread...</p>`;
+            resMeter.innerText = (currentRes + 15) + "%";
+            
+            if (currentRes + 15 >= 100) {
+                log.innerHTML += `<p class="text-cyan-400">> HARMONIC PEAK REACHED.</p>`;
+            }
+        }
+
+        function commitWeave() {
+            alert("WEAVE COMMITTED. SYNTROPY CREDITS PENDING...");
+            showPage('profile-section');
+        }
+
+        // Sovereign Command: Dynamic Feedback
+        function updateCmd(type, val) {
+            const status = document.getElementById('cmd-status');
+            if (type === 'Taxation') {
+                status.innerText = `Suppressing Entropy: ${val}% // System Stability Increasing`;
+            } else {
+                status.innerText = `Adjusting Vortex: ${val}X // Output Accelerating`;
+            }
+        }
+
+        // Background Vortex
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            particles = Array.from({ length: 80 }, () => ({
+            particles = Array.from({ length: 60 }, () => ({
                 x: Math.random() * width, y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
                 life: Math.random() * 100 + 100
             }));
         }
@@ -207,7 +279,7 @@
                 p.x += p.vx; p.y += p.vy; p.life--;
                 if (p.life <= 0) { p.x = Math.random() * width; p.y = Math.random() * height; p.life = 200; }
                 ctx.fillStyle = `rgba(0, 240, 255, ${p.life / 200})`;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, 0.8, 0, Math.PI * 2); ctx.fill();
             });
             requestAnimationFrame(animate);
         }
