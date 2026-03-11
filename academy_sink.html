@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>5IR LESSON 02: THE NAVIER-STOKES SINK</title>
+    <style>
+        :root {
+            --cyan: #00f2ff;
+            --purple: #bc00ff;
+            --black: #050505;
+            --red: #ff3c3c;
+        }
+        body {
+            background-color: var(--black);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+        #terminal {
+            width: 80%;
+            max-width: 800px;
+            border: 1px solid var(--red);
+            padding: 20px;
+            background: rgba(255, 60, 60, 0.05);
+            box-shadow: 0 0 20px rgba(255, 60, 60, 0.1);
+        }
+        .glitch {
+            font-size: 2rem;
+            color: var(--red);
+            text-shadow: 2px 2px var(--purple);
+            margin-bottom: 20px;
+        }
+        .instruction {
+            color: #888;
+            margin-bottom: 30px;
+        }
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 20px auto;
+            border: 1px solid #333;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #sink {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background: black;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px var(--cyan);
+            z-index: 10;
+        }
+        .impact {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--red);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        #shield-status {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--cyan);
+        }
+        #absorb-meter {
+            width: 100%;
+            height: 10px;
+            background: #111;
+            margin-top: 10px;
+            border: 1px solid #333;
+        }
+        #absorb-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--cyan);
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <div class="glitch">PH-102: DEFENSIVE RESONANCE</div>
+    <div class="instruction">4TH REV SHIELDS ARE BRITTLE. THE SINK CONSUMES AGITATION. CLICK TO SIMULATE ATTACK.</div>
+    
+    <div id="canvas-container">
+        <div id="sink"></div>
+    </div>
+
+    <div id="shield-status">ABSORPTION: 0%</div>
+    <div id="absorb-meter"><div id="absorb-fill"></div></div>
+</div>
+
+<script>
+    const container = document.getElementById('canvas-container');
+    const sink = document.getElementById('sink');
+    const fill = document.getElementById('absorb-fill');
+    const status = document.getElementById('shield-status');
+    
+    let absorption = 0;
+
+    container.onclick = function(e) {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Create impact particle
+        const impact = document.createElement('div');
+        impact.className = 'impact';
+        impact.style.left = x + 'px';
+        impact.style.top = y + 'px';
+        container.appendChild(impact);
+
+        // Animate towards sink
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const startTime = Date.now();
+        const duration = 500;
+
+        function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = elapsed / duration;
+
+            if (progress < 1) {
+                const curX = x + (centerX - x) * progress;
+                const curY = y + (centerY - y) * progress;
+                impact.style.left = curX + 'px';
+                impact.style.top = curY + 'px';
+                impact.style.opacity = 1 - progress;
+                requestAnimationFrame(animate);
+            } else {
+                impact.remove();
+                updateAbsorption();
+            }
+        }
+        animate();
+    };
+
+    function updateAbsorption() {
+        absorption += 5;
+        if (absorption > 100) absorption = 100;
+        fill.style.width = absorption + '%';
+        status.innerText = 'ABSORPTION: ' + absorption + '%';
+        
+        if (absorption >= 100) {
+            status.innerHTML = '<span style="color:white; background:var(--cyan); padding: 2px 5px;">STABLE CLARITY ACHIEVED</span>';
+            sink.style.boxShadow = '0 0 50px white';
+            sink.style.borderColor = 'white';
+        }
+    }
+</script>
+
+</body>
+</html>

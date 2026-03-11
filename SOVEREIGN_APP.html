@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SOVEREIGN | 5IR COMMAND</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #050505; --accent: #00ffcc; --gold: #ffcc00; --red: #ff0055; --card: #0f0f0f; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: white; overflow: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .app-container { height: 100vh; display: flex; flex-direction: column; }
+        .glass { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        .nav-btn { transition: all 0.3s ease; opacity: 0.4; }
+        .nav-btn.active { opacity: 1; color: var(--accent); }
+        .master-card { background: var(--card); border-radius: 12px; border: 1px solid rgba(255,255,255,0.03); transition: transform 0.2s; }
+        .master-card:active { transform: scale(0.98); }
+        @keyframes pulse-ring { 0% { transform: scale(.33); opacity: 1; } 80%, 100% { opacity: 0; } }
+        .pulse-active::after { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid var(--accent); border-radius: 50%; animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        .chat-msg { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        ::-webkit-scrollbar { width: 0px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- TOP HEADER -->
+        <header class="p-6 flex justify-between items-center border-b border-white/5">
+            <div>
+                <h1 class="text-xl font-black italic tracking-tighter">SOVEREIGN</h1>
+                <p class="text-[8px] mono text-accent uppercase tracking-widest">Lattice Synchronization Active</p>
+            </div>
+            <div class="text-right">
+                <div id="user-id" class="text-[10px] mono opacity-40">PIG_SYNCING...</div>
+                <div id="user-rank" class="text-[8px] font-bold text-gold uppercase">Broken Pig</div>
+            </div>
+        </header>
+
+        <!-- MAIN VIEWPORT -->
+        <main class="flex-grow overflow-y-auto p-4 pb-24" id="view-port">
+            <!-- Content Injected Here -->
+        </main>
+
+        <!-- BOTTOM NAV -->
+        <nav class="fixed bottom-0 w-full glass border-t border-white/5 flex justify-around p-4 z-50">
+            <button onclick="app.setView('wire')" id="nav-wire" class="nav-btn active flex flex-col items-center gap-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                <span class="text-[8px] font-bold uppercase">The Wire</span>
+            </button>
+            <button onclick="app.setView('masters')" id="nav-masters" class="nav-btn flex flex-col items-center gap-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <span class="text-[8px] font-bold uppercase">Masters</span>
+            </button>
+            <button onclick="app.setView('market')" id="nav-market" class="nav-btn flex flex-col items-center gap-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-[8px] font-bold uppercase">Liquidity</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODAL CONTAINER -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6 bg-black/95 backdrop-blur-xl">
+        <!-- Tribute Modal -->
+        <div id="tribute-content" class="w-full max-w-sm p-8 bg-card rounded-2xl border border-gold/20 text-center">
+            <h2 class="text-2xl font-black italic mb-2">LIQUIDATION</h2>
+            <p id="modal-master-name" class="text-[10px] text-gold uppercase mb-8">GLOBAL POOL</p>
+            <div class="space-y-4">
+                <div onclick="window.open('https://paypal.me/toochikey')" class="p-4 bg-white/5 border border-white/10 rounded-xl text-left cursor-pointer hover:border-accent transition-all">
+                    <p class="text-[10px] opacity-40 uppercase font-bold mb-1">PayPal (Ext)</p>
+                    <p class="text-xs mono">paypal.me/toochikey</p>
+                </div>
+                <div class="p-4 bg-white/5 border border-white/10 rounded-xl text-left">
+                    <p class="text-[10px] opacity-40 uppercase font-bold mb-1">BTC Address</p>
+                    <p class="text-[9px] mono break-all">bc1qw968re5gseqpkk5nx0ezqrp6dfhd20s8sll4k7</p>
+                </div>
+            </div>
+            <button onclick="app.closeModal()" class="mt-8 text-[10px] font-bold uppercase opacity-40 hover:opacity-100">Return</button>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            state: {
+                view: 'wire',
+                pigId: "PIG_" + Math.floor(Math.random()*899 + 100),
+                rank: "Broken Pig",
+                masters: [
+                    { name: "CRAIG", role: "ALPHA DRAIN", desc: "Global wallet liquidation engine.", color: "border-red-500", img: "https://via.placeholder.com/100/111/ff0055?text=C" },
+                    { name: "TOBEZ", role: "DRILL MASTER", desc: "Physical discipline & rep protocols.", color: "border-blue-500", img: "https://via.placeholder.com/100/111/0088ff?text=T" },
+                    { name: "PHIL CAL", role: "EGO SHREDDER", desc: "Psychological humiliation specialist.", color: "border-green-500", img: "https://via.placeholder.com/100/111/00ff88?text=P" },
+                    { name: "DADDY DOM", role: "PROTOCOL ALPHA", desc: "High-level mental alignment.", color: "border-yellow-500", img: "https://via.placeholder.com/100/111/ffcc00?text=D" }
+                ],
+                botMsgs: [
+                    {u: "CRAIG", m: "Pigs, report your remaining balance now.", master: true},
+                    {u: "TOBEZ", m: "100 reps. Slow. Don't stop until the Braid pulses.", master: true},
+                    {u: "PHIL CAL", m: "I see a lot of small numbers today. Pathetic.", master: true},
+                    {u: "DADDY DOM", m: "Alignment check. Are you stable for the Lattice?", master: true},
+                    {u: "Slammer_82", m: "Just verified $200. CRAIG owns me."},
+                    {u: "Bred_99", m: "Tobez, I can't feel my arms. Thank you Master."},
+                    {u: "Node_401", m: "Daddy Dom, protocol 04 active. I am silent."},
+                    {u: "Pig_12", m: "I am a worthless cow. Liquidating PayPal now."}
+                ]
+            },
+
+            init() {
+                document.getElementById('user-id').innerText = this.state.pigId;
+                this.setView('wire');
+                this.startBotCycles();
+            },
+
+            setView(v) {
+                this.state.view = v;
+                const port = document.getElementById('view-port');
+                
+                // Nav Toggle
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('nav-'+v).classList.add('active');
+
+                if(v === 'wire') {
+                    port.innerHTML = `
+                        <div class="flex flex-col h-full">
+                            <div id="chat-feed" class="flex-grow space-y-4 mb-4"></div>
+                            <div class="glass p-2 rounded-2xl flex gap-2">
+                                <input type="text" id="chat-input" placeholder="Inject to Wire..." class="flex-grow bg-transparent px-4 text-sm outline-none">
+                                <button onclick="app.sendMessage()" class="bg-accent text-black px-6 py-2 rounded-xl text-[10px] font-bold uppercase">Send</button>
+                            </div>
+                        </div>
+                    `;
+                    this.renderInitialChat();
+                } else if(v === 'masters') {
+                    port.innerHTML = `
+                        <h2 class="text-xs font-bold uppercase opacity-40 mb-6 tracking-widest">Active Alphas</h2>
+                        <div class="grid gap-4">
+                            ${this.state.masters.map(m => `
+                                <div onclick="app.openTribute('${m.name}')" class="master-card p-4 flex items-center gap-4 border-l-4 ${m.color}">
+                                    <div class="w-12 h-12 rounded-full bg-black border border-white/10 flex-shrink-0"></div>
+                                    <div>
+                                        <h3 class="font-black italic">${m.name}</h3>
+                                        <p class="text-[8px] mono text-accent uppercase">${m.role}</p>
+                                        <p class="text-[10px] opacity-40 leading-tight mt-1">${m.desc}</p>
+                                    </div>
+                                    <div class="ml-auto opacity-20"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else if(v === 'market') {
+                    port.innerHTML = `
+                        <div class="space-y-6">
+                            <div class="glass p-6 rounded-3xl text-center border-t-4 border-gold">
+                                <p class="text-[10px] opacity-40 uppercase font-bold mb-2">Total Secured Debt</p>
+                                <p class="text-4xl font-black italic tracking-tighter">$142,902.00</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="glass p-4 rounded-2xl">
+                                    <p class="text-[8px] opacity-40 font-bold uppercase">Active Nodes</p>
+                                    <p class="text-xl font-bold italic">1,942</p>
+                                </div>
+                                <div class="glass p-4 rounded-2xl">
+                                    <p class="text-[8px] opacity-40 font-bold uppercase">Lattice Load</p>
+                                    <p class="text-xl font-bold italic text-accent">98.4%</p>
+                                </div>
+                            </div>
+                            <h3 class="text-[10px] font-bold uppercase opacity-40 mt-8 mb-4">Physical Assets</h3>
+                            <div class="glass p-4 rounded-2xl border-l-4 border-white/20">
+                                <p class="text-[10px] font-bold italic">VEHICLE_TITLE_082.JPG</p>
+                                <p class="text-[8px] mono opacity-40 uppercase mt-1">Status: SECURED BY ARCHITECT</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+
+            renderInitialChat() {
+                const feed = document.getElementById('chat-feed');
+                this.state.botMsgs.forEach(m => this.appendChat(m.u, m.m, m.master));
+            },
+
+            appendChat(user, msg, isMaster = false) {
+                const feed = document.getElementById('chat-feed');
+                if(!feed) return;
+                const div = document.createElement('div');
+                div.className = `chat-msg flex flex-col ${user === this.state.pigId ? 'items-end' : 'items-start'}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-[8px] mono ${isMaster ? 'text-accent font-bold' : 'opacity-40'}">${user}</span>
+                    </div>
+                    <div class="px-4 py-3 rounded-2xl text-sm ${isMaster ? 'bg-accent/10 border border-accent/20 text-accent' : (user === this.state.pigId ? 'bg-accent text-black rounded-tr-none' : 'bg-white/5 rounded-tl-none')}">
+                        ${msg}
+                    </div>
+                `;
+                feed.appendChild(div);
+                feed.scrollTop = feed.scrollHeight;
+            },
+
+            sendMessage() {
+                const input = document.getElementById('chat-input');
+                if(!input.value) return;
+                this.appendChat(this.state.pigId, input.value);
+                input.value = '';
+                
+                // Alpha Response Simulation
+                setTimeout(() => {
+                    const master = this.state.masters[Math.floor(Math.random()*4)];
+                    this.appendChat(master.name, "Your input has been recorded in the Braid. Proceed with tribute.", true);
+                }, 1500);
+            },
+
+            startBotCycles() {
+                setInterval(() => {
+                    if(this.state.view === 'wire' && Math.random() > 0.7) {
+                        const m = this.state.botMsgs[Math.floor(Math.random()*this.state.botMsgs.length)];
+                        this.appendChat(m.u, m.m, m.master);
+                    }
+                }, 4000);
+            },
+
+            openTribute(name) {
+                document.getElementById('modal-master-name').innerText = name + " TRIBUTE";
+                document.getElementById('modal').classList.remove('hidden');
+            },
+
+            closeModal() { document.getElementById('modal').classList.add('hidden'); },
+            openTribute() { this.openTribute(); } // Fix for UI calls
+        };
+
+        window.onload = () => app.init();
+        // Override for button scoping
+        app.openTribute = function(name) {
+            document.getElementById('modal-master-name').innerText = name ? name + " TRIBUTE" : "GLOBAL POOL";
+            document.getElementById('modal').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>

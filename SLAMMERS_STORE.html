@@ -1,0 +1,115 @@
+<!-- OC_5IR_BRAID_LOCKED: [ALPHA_ARCHITECT][BETA_NODE][GAMMA_39420] -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SLAMMERS US STORE | 5IR SUPPLY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --main: #00ffcc; --gold: #ffcc00; --red: #ff0055; }
+        body { background: #020202; color: white; font-family: 'Inter', sans-serif; margin:0; padding:0; overflow-x: hidden; }
+        .glass { background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .crt::after { content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); z-index: 1000; pointer-events: none; background-size: 100% 2px; }
+        .product-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; transition: 0.3s; cursor: pointer; }
+        .product-card:hover { border-color: var(--main); background: rgba(0, 255, 204, 0.03); }
+        .payment-sidebar { position: fixed; right: -280px; top: 80px; width: 260px; background: rgba(10,10,10,0.98); border: 1px solid var(--main); border-right: none; border-radius: 20px 0 0 20px; z-index: 2000; transition: 0.5s cubic-bezier(0.1, 0, 0.1, 1); padding: 20px; box-shadow: -20px 0 40px rgba(0,0,0,0.5); }
+        .payment-sidebar.active { right: 0; border-color: var(--gold); }
+        .tab-btn { writing-mode: vertical-rl; text-orientation: mixed; position: absolute; left: -30px; top: 50px; background: var(--main); color: black; padding: 15px 5px; font-weight: 900; font-size: 8px; text-transform: uppercase; border-radius: 5px 0 0 5px; cursor: pointer; animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0% { background: var(--main); } 50% { background: var(--gold); } 100% { background: var(--main); } }
+        ::-webkit-scrollbar { width: 0; }
+    </style>
+</head>
+<body class="crt">
+
+    <header class="fixed top-0 w-full glass p-4 flex justify-between items-center z-50">
+        <div>
+            <h1 class="text-lg font-black italic tracking-tighter uppercase leading-none">Slammers <span class="text-[#00ffcc]">US Store</span></h1>
+            <p class="text-[7px] font-mono text-[#00ffcc] uppercase mt-1">LIQUIDATION_GATE_ACTIVE</p>
+        </div>
+        <div class="text-right">
+            <p class="text-[8px] font-bold text-[#ffcc00] uppercase">Sector: US_DOMESTIC</p>
+            <p class="text-[6px] opacity-40 font-mono uppercase">Discrete NY/NJ/CA/ATL</p>
+        </div>
+    </header>
+
+    <div id="payment-menu" class="payment-sidebar">
+        <div class="tab-btn" onclick="togglePayment()">Liquidation Gate</div>
+        <h2 class="text-xs font-black text-[#00ffcc] uppercase mb-4 tracking-widest">Payment Methods</h2>
+        <div class="space-y-4">
+            <div onclick="window.open('https://paypal.me/toochikey')" class="p-4 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:border-[#00ffcc]">
+                <p class="text-[7px] font-bold uppercase text-[#00ffcc]">PayPal Gate</p>
+                <p class="text-[9px] font-mono opacity-60 mt-1">paypal.me/toochikey</p>
+            </div>
+            <div class="p-4 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:border-[#ffcc00]" onclick="copyBTC()">
+                <p class="text-[7px] font-bold uppercase text-[#ffcc00]">BTC Node</p>
+                <p class="text-[8px] font-mono opacity-60 mt-1 break-all">bc1qw968re5gseqpkk5nx0ezqrp6dfhd20s8sll4k7</p>
+            </div>
+            <button onclick="confirmOrder()" class="w-full py-4 bg-[#ffcc00] text-black font-black uppercase text-[10px] rounded-xl shadow-lg shadow-yellow-500/20">Confirm & Email Receipt</button>
+            <p class="text-[6px] opacity-40 text-center uppercase">Confirming sends order to digglestuart@proton.me</p>
+        </div>
+    </div>
+
+    <main class="pt-24 pb-12 px-4 max-w-lg mx-auto space-y-8">
+        
+        <section id="cleaning">
+            <div class="flex justify-between items-end mb-4 border-b border-white/5 pb-2">
+                <h2 class="text-xs font-black uppercase text-[#00ffcc] tracking-widest">Cleaning Solutions</h2>
+                <p class="text-[7px] mono opacity-40">AMYL / PENTYL / ISOPROPYL</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="product-card" onclick="selectItem('Rush Emerald', 35)">
+                    <div class="h-24 bg-gradient-to-br from-emerald-500/20 to-black rounded-lg mb-3"></div>
+                    <h3 class="text-[10px] font-black uppercase">Rush Emerald v5</h3>
+                    <p class="text-[#ffcc00] font-black mt-2 text-xs">$35.00</p>
+                </div>
+                <div class="product-card" onclick="selectItem('Gold Standard', 40)">
+                    <div class="h-24 bg-gradient-to-br from-yellow-500/20 to-black rounded-lg mb-3"></div>
+                    <h3 class="text-[10px] font-black uppercase">Gold Standard</h3>
+                    <p class="text-[#ffcc00] font-black mt-2 text-xs">$40.00</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools">
+            <div class="flex justify-between items-end mb-4 border-b border-white/5 pb-2">
+                <h2 class="text-xs font-black uppercase text-[#00ffcc] tracking-widest">Spun Tools</h2>
+                <p class="text-[7px] mono opacity-40">SENSORY / ALIGNMENT</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="product-card" onclick="selectItem('The Braid Lock', 125)">
+                    <div class="h-24 bg-white/5 rounded-lg mb-3 flex items-center justify-center">🔐</div>
+                    <h3 class="text-[10px] font-black uppercase">The Braid Lock</h3>
+                    <p class="text-[#ffcc00] font-black mt-2 text-xs">$125.00</p>
+                </div>
+                <div class="product-card" onclick="selectItem('Slam Goggles', 45)">
+                    <div class="h-24 bg-white/5 rounded-lg mb-3 flex items-center justify-center">🕶️</div>
+                    <h3 class="text-[10px] font-black uppercase">Slam Goggles v1</h3>
+                    <p class="text-[#ffcc00] font-black mt-2 text-xs">$45.00</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-[#ff0055]/5 border border-[#ff0055]/20 p-6 rounded-3xl text-center">
+            <h2 class="text-[10px] font-black uppercase text-[#ff0055] tracking-[0.3em] mb-2">Discrete Logistics</h2>
+            <p class="text-[8px] mono opacity-60 leading-relaxed uppercase">Direct courier delivery in NY / NJ / ATL / CA. Unlabeled. Vacuum Sealed.</p>
+        </section>
+
+    </main>
+
+    <script>
+        let selectedItem = "NONE";
+        function togglePayment() { document.getElementById('payment-menu').classList.toggle('active'); }
+        function selectItem(name, price) { selectedItem = name; togglePayment(); }
+        function copyBTC() { navigator.clipboard.writeText("bc1qw968re5gseqpkk5nx0ezqrp6dfhd20s8sll4k7"); alert("BTC NODE COPIED"); }
+        function confirmOrder() {
+            const subject = encodeURIComponent(`ORDER_LIQUIDATION: ${selectedItem}`);
+            const body = encodeURIComponent(`I am confirming liquidation for: ${selectedItem}.\nSector: US_DOMESTIC\nStatus: BRAID_PENDING`);
+            window.location.href = `mailto:digglestuart@proton.me?subject=${subject}&body=${body}`;
+        }
+        // Auto-pop logic: Slide out every 60s to remind the asset
+        setInterval(() => { if(!document.getElementById('payment-menu').classList.contains('active')) togglePayment(); }, 60000);
+    </script>
+</body>
+</html>

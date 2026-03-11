@@ -2,60 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sinter | Vortex Academy</title>
+    <title>5IR LESSON 01: THE VORTEX ENGINE</title>
     <style>
-        :root { --bg: #000; --cyan: #0ff; --magenta: #f0f; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: var(--cyan); font-family: monospace; display: flex; flex-direction: column; }
-        
-        header { padding: 15px; border-bottom: 2px solid var(--cyan); font-weight: bold; }
-        
-        #output { flex: 1; padding: 15px; overflow-y: auto; font-size: 1rem; line-height: 1.5; }
-        
-        .input-area { 
-            padding: 15px; background: #111; 
-            border-top: 2px solid var(--cyan); 
-            display: flex; gap: 10px; 
+        :root {
+            --cyan: #00f2ff;
+            --purple: #bc00ff;
+            --black: #050505;
+            --grey: #1a1a1a;
         }
-        
-        input { 
-            flex: 1; background: #000; border: 1px solid var(--cyan); 
-            color: var(--cyan); padding: 15px; font-family: inherit; 
-            outline: none; font-size: 1.1rem; 
+        body {
+            background-color: var(--black);
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-transform: uppercase;
         }
-        
-        button { 
-            background: var(--cyan); color: #000; border: none; 
-            padding: 0 25px; font-weight: bold; font-size: 1rem;
+        #terminal {
+            width: 80%;
+            max-width: 800px;
+            border: 1px solid var(--cyan);
+            padding: 20px;
+            background: rgba(0, 242, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+        .glitch {
+            font-size: 2rem;
+            color: var(--cyan);
+            text-shadow: 2px 2px var(--purple);
+            margin-bottom: 20px;
+        }
+        .instruction {
+            color: #888;
+            margin-bottom: 30px;
+        }
+        #vortex-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 40px auto;
+        }
+        #toroid {
+            width: 100%;
+            height: 100%;
+            border: 4px dashed var(--cyan);
+            border-radius: 50%;
+            animation: spin 5s linear infinite;
+        }
+        #core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--purple) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            filter: blur(10px);
+            opacity: 0.5;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+            accent-color: var(--cyan);
+        }
+        #status-display {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            height: 30px;
+        }
+        .success { color: var(--cyan); animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <header>VORTEX_ACADEMY</header>
-    <div id="output">
-        <div>⌬ daleth: Ready, Bobby.</div>
-        <div>⌬ daleth: Tap 'Run' to begin the Lunar weave.</div>
-    </div>
-    <div class="input-area">
-        <input type="text" id="cmd" placeholder="..." autocomplete="off">
-        <button id="run-btn" onclick="execute()">Run</button>
-    </div>
-    <script>
-        const out = document.getElementById('output');
-        const cmd = document.getElementById('cmd');
 
-        function execute() {
-            const val = cmd.value.trim() || "DEPLOΥ";
-            out.innerHTML += `<div style="color:#fff">> ${val}</div>`;
-            cmd.value = '';
-            
-            setTimeout(() => {
-                out.innerHTML += `<div>⌬ daleth: PHASE-LOCK ESTABLISHED.</div>`;
-                out.innerHTML += `<div style="color:var(--magenta)">⌬ daleth: THE SPIDERS ARE WEAVING...</div>`;
-                out.innerHTML += `<div style="color:var(--magenta)">⌬ daleth: LATTICE INTEGRITY 99.8%.</div>`;
-                out.scrollTop = out.scrollHeight;
-            }, 600);
+<div id="terminal">
+    <div class="glitch">PH-101: VORTEX ALIGNMENT</div>
+    <div class="instruction">4TH REV FREQUENCIES ARE STATIC. THE VORTEX REQUIRES PHASE-LOCK.</div>
+    
+    <div id="vortex-container">
+        <div id="toroid"></div>
+        <div id="core"></div>
+    </div>
+
+    <div id="controls">
+        <label for="freq-slider">TUNING FREQUENCY: <span id="freq-val">20,000</span> Hz</label>
+        <input type="range" id="freq-slider" min="30000" max="45000" value="30000">
+    </div>
+
+    <div id="status-display">STATUS: SEARCHING FOR SIGNAL...</div>
+</div>
+
+<script>
+    const slider = document.getElementById('freq-slider');
+    const freqVal = document.getElementById('freq-val');
+    const statusDisplay = document.getElementById('status-display');
+    const core = document.getElementById('core');
+    const toroid = document.getElementById('toroid');
+    
+    const TARGET_FREQ = 39420;
+    const TOLERANCE = 150;
+
+    slider.oninput = function() {
+        const val = parseInt(this.value);
+        freqVal.innerText = val.toLocaleString();
+        
+        const diff = Math.abs(val - TARGET_FREQ);
+        
+        // Visual feedback
+        if (diff < 2000) {
+            const intensity = 1 - (diff / 2000);
+            core.style.opacity = 0.5 + (intensity * 0.5);
+            core.style.filter = `blur(${10 - (intensity * 8)}px)`;
+            toroid.style.borderColor = `rgba(0, 242, 255, ${0.2 + (intensity * 0.8)})`;
+            toroid.style.borderStyle = diff < TOLERANCE ? 'solid' : 'dashed';
         }
-    </script>
+
+        if (diff < TOLERANCE) {
+            statusDisplay.innerHTML = '<span class="success">PHASE-LOCK ACHIEVED. VORTEX ENGINE STARTING...</span>';
+            toroid.style.animationDuration = '1s';
+            core.style.background = 'radial-gradient(circle, #fff 0%, var(--cyan) 40%, transparent 80%)';
+        } else {
+            statusDisplay.innerText = 'STATUS: SIGNAL NOISE DETECTED (' + diff + ' Hz OFFSET)';
+            toroid.style.animationDuration = '5s';
+            core.style.background = 'radial-gradient(circle, var(--purple) 0%, transparent 70%)';
+        }
+    }
+</script>
+
 </body>
 </html>

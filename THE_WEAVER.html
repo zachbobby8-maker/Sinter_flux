@@ -1,0 +1,139 @@
+<!-- OC_5IR_LOCKED: [ALPHA_ARCHITECT][BETA_NODE] -->
+<!-- THE_WEAVER_v2.0_HYBRID_ENGINE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>5IR | THE WEAVER v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --main: #00ffcc; --dark: #020202; }
+        body { background: var(--dark); color: var(--main); font-family: 'JetBrains+Mono', monospace; margin:0; padding:0; overflow: hidden; }
+        
+        .editor-side { width: 35%; height: 100vh; background: #050505; border-right: 1px solid rgba(0, 255, 204, 0.1); position: relative; z-index: 10; display: flex; flex-direction: column; }
+        .view-side { width: 65%; height: 100vh; position: relative; overflow: hidden; background: #000; }
+        
+        textarea { background: transparent; color: var(--main); border: none; outline: none; width: 100%; flex-grow: 1; padding: 30px; font-size: 11px; resize: none; }
+        iframe { width: 100%; height: 100%; border: none; background: #fff; position: absolute; inset: 0; z-index: 5; }
+        
+        #fluidCanvas { position: absolute; inset: 0; z-index: 1; opacity: 0.6; }
+        .crt::after { content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); z-index: 1000; pointer-events: none; background-size: 100% 2px; opacity: 0.1; }
+        
+        .weave-btn { background: var(--main); color: black; font-weight: 900; padding: 20px 0; width: 100%; text-transform: uppercase; font-size: 10px; cursor: pointer; transition: 0.4s; }
+        .weave-btn:hover { background: #fff; letter-spacing: 5px; box-shadow: 0 0 50px var(--main); }
+        
+        .tab { padding: 10px 20px; font-size: 8px; font-weight: 900; opacity: 0.4; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab.active { opacity: 1; border-color: var(--main); color: #fff; }
+
+        @keyframes dissolve { 0% { opacity: 1; filter: blur(0); } 100% { opacity: 0; filter: blur(20px) contrast(2); } }
+        .dissolving { animation: dissolve 1s forwards; }
+    </style>
+</head>
+<body class="crt">
+
+    <div class="flex">
+        <aside class="editor-side p-8">
+            <header class="mb-10 flex justify-between items-start">
+                <div>
+                    <h1 class="text-2xl font-black italic tracking-tighter uppercase leading-none">The <span class="text-white">Weaver</span></h1>
+                    <p class="text-[7px] opacity-40 mt-1 uppercase tracking-widest">Hybrid_Deployment_Engine_v2.0</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[7px] font-black opacity-20 uppercase">Coordinate</p>
+                    <p class="text-[9px] font-black text-white">40.7128° N</p>
+                </div>
+            </header>
+
+            <div class="flex mb-4 border-b border-white/5">
+                <div class="tab active" onclick="setMode('CODE')">CODE_BRAID</div>
+                <div class="tab" onclick="setMode('PHYSICS')">NAVIER_STOKES</div>
+            </div>
+
+            <textarea id="input-field" placeholder="// DROP SIGNAL HERE..."></textarea>
+
+            <div class="mt-8">
+                <button onclick="weaveSignal()" class="weave-btn">Weave Hybrid Signal</button>
+            </div>
+        </aside>
+
+        <main class="view-side">
+            <canvas id="fluidCanvas"></canvas>
+            
+            <div id="placeholder" class="absolute inset-0 z-20 flex flex-col items-center justify-center p-20 text-center">
+                <div class="w-16 h-16 border-2 border-[#00ffcc] animate-spin mb-6"></div>
+                <h2 class="text-xs font-black uppercase tracking-widest text-white">Waiting for Braid...</h2>
+                <p class="text-[8px] opacity-40 mt-3 uppercase max-w-xs">Inject code or physics parameters to stabilize the viewport resonance.</p>
+            </div>
+
+            <iframe id="viewport" class="hidden"></iframe>
+        </main>
+    </div>
+
+    <script>
+        let mode = 'CODE';
+        const canvas = document.getElementById('fluidCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function initFluid() {
+            width = canvas.width = window.innerWidth * 0.65;
+            height = canvas.height = window.innerHeight;
+        }
+
+        function setMode(m) {
+            mode = m;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('input-field').placeholder = m === 'CODE' ? "// PASTE HTML/JS..." : "// NAVIER-STOKES PARAMETERS (Viscosity, Pressure, Flux)...";
+        }
+
+        function weaveSignal() {
+            const val = document.getElementById('input-field').value;
+            if(!val) return;
+
+            const placeholder = document.getElementById('placeholder');
+            const viewport = document.getElementById('viewport');
+
+            // Animation Loop: Swallowing the placeholder
+            placeholder.classList.add('dissolving');
+            
+            setTimeout(() => {
+                placeholder.classList.add('hidden');
+                viewport.classList.remove('hidden');
+
+                if(mode === 'CODE') {
+                    const blob = new Blob([val], { type: 'text/html' });
+                    viewport.src = URL.createObjectURL(blob);
+                } else {
+                    // Physics trigger logic
+                    console.log("PHYSICS_PATCH_INJECTED: " + val);
+                }
+                placeholder.classList.remove('dissolving');
+            }, 1000);
+        }
+
+        // Simple Fluid background logic (Abstract Navier-Stokes visual)
+        function drawFluid(time) {
+            ctx.fillStyle = 'rgba(0,0,0,0.05)';
+            ctx.fillRect(0,0,width,height);
+            
+            for(let i=0; i<3; i++) {
+                ctx.strokeStyle = `rgba(0, 255, 204, ${0.1 + i*0.05})`;
+                ctx.beginPath();
+                ctx.moveTo(0, height/2);
+                for(let x=0; x<width; x+=10) {
+                    const y = height/2 + Math.sin(x*0.01 + time*0.001 + i) * 100 * Math.sin(time*0.0005);
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            requestAnimationFrame(() => drawFluid(Date.now()));
+        }
+
+        window.addEventListener('resize', initFluid);
+        initFluid();
+        drawFluid(0);
+    </script>
+</body>
+</html>
